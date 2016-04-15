@@ -2,12 +2,12 @@ package io.dropwizard.metrics;
 
 import org.junit.Test;
 
-import io.dropwizard.metrics.Counter;
+import io.dropwizard.metrics.CounterMetric;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class CounterTest {
-    private final Counter counter = new Counter();
+    private final CounterMetric counter = new CounterMetric();
 
     @Test
     public void startsAtZero() throws Exception {

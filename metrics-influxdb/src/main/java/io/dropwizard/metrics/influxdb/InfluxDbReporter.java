@@ -2,6 +2,7 @@ package io.dropwizard.metrics.influxdb;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -10,7 +11,7 @@ import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.dropwizard.metrics.Counter;
+import io.dropwizard.metrics.CounterMetric;
 import io.dropwizard.metrics.Counting;
 import io.dropwizard.metrics.Gauge;
 import io.dropwizard.metrics.Histogram;
@@ -105,6 +106,9 @@ public final class InfluxDbReporter extends ScheduledReporter {
     private final InfluxDbSender influxDb;
     private final boolean skipIdleMetrics;
     private final Map<MetricName, Long> previousValues;
+	private final String durationUnit;
+	protected final double rateFactor;
+	protected final double durationFactor;
 
     private InfluxDbReporter(final MetricRegistry registry, final InfluxDbSender influxDb, final Map<String, String> tags,
                              final TimeUnit rateUnit, final TimeUnit durationUnit, final MetricFilter filter, final boolean skipIdleMetrics) {
@@ -113,6 +117,9 @@ public final class InfluxDbReporter extends ScheduledReporter {
         influxDb.setTags(tags);
         this.skipIdleMetrics = skipIdleMetrics;
         this.previousValues = new TreeMap<>();
+        this.durationUnit = durationUnit.toString().toLowerCase(Locale.US);
+        this.rateFactor = rateUnit.toSeconds(1);
+        this.durationFactor = 1.0 / durationUnit.toNanos(1);
     }
 
     public static Builder forRegistry(MetricRegistry registry) {
@@ -120,7 +127,7 @@ public final class InfluxDbReporter extends ScheduledReporter {
     }
 
     @Override
-    public void report(final SortedMap<MetricName, Gauge> gauges, final SortedMap<MetricName, Counter> counters,
+    public void report(final SortedMap<MetricName, Gauge> gauges, final SortedMap<MetricName, CounterMetric> counters,
                        final SortedMap<MetricName, Histogram> histograms, final SortedMap<MetricName, Meter> meters, final SortedMap<MetricName, Timer> timers) {
         final long now = System.currentTimeMillis();
 
@@ -131,7 +138,7 @@ public final class InfluxDbReporter extends ScheduledReporter {
                 reportGauge(entry.getKey(), entry.getValue(), now);
             }
 
-            for (Map.Entry<MetricName, Counter> entry : counters.entrySet()) {
+            for (Map.Entry<MetricName, CounterMetric> entry : counters.entrySet()) {
                 reportCounter(entry.getKey(), entry.getValue(), now);
             }
 
@@ -211,7 +218,7 @@ public final class InfluxDbReporter extends ScheduledReporter {
                 fields));
     }
 
-    private void reportCounter(MetricName name, Counter counter, long now) {
+    private void reportCounter(MetricName name, CounterMetric counter, long now) {
         Map<String, Object> fields = new HashMap<>();
         fields.put("count", counter.getCount());
         influxDb.appendPoints(new InfluxDbPoint(
@@ -267,5 +274,17 @@ public final class InfluxDbReporter extends ScheduledReporter {
         }
         return count - previous;
     }
+
+	protected double convertRate(double rate) {
+	    return rate * rateFactor;
+	}
+
+	protected double convertDuration(double duration) {
+	    return duration * durationFactor;
+	}
+
+	protected String getDurationUnit() {
+	    return durationUnit;
+	}
 
 }

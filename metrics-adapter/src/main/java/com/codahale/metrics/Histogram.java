@@ -1,5 +1,7 @@
 package com.codahale.metrics;
 
+import com.codahale.metrics.health.Snapshot;
+
 import io.dropwizard.metrics.Counting;
 import io.dropwizard.metrics.Reservoir;
 import io.dropwizard.metrics.Sampling;

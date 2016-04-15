@@ -4,7 +4,7 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
 
-import io.dropwizard.metrics.Counter;
+import io.dropwizard.metrics.CounterMetric;
 import io.dropwizard.metrics.Gauge;
 import io.dropwizard.metrics.Histogram;
 import io.dropwizard.metrics.Meter;
@@ -48,7 +48,7 @@ public class Slf4jReporterTest {
     public void reportsGaugeValuesAtError() throws Exception {
         when(logger.isErrorEnabled(marker)).thenReturn(true);
         errorReporter.report(map("gauge", gauge("value")),
-                this.<Counter>map(),
+                this.<CounterMetric>map(),
                 this.<Histogram>map(),
                 this.<Meter>map(),
                 this.<Timer>map());
@@ -58,7 +58,7 @@ public class Slf4jReporterTest {
 
     @Test
     public void reportsCounterValuesAtError() throws Exception {
-        final Counter counter = mock(Counter.class);
+        final CounterMetric counter = mock(CounterMetric.class);
         when(counter.getCount()).thenReturn(100L);
         when(logger.isErrorEnabled(marker)).thenReturn(true);
 
@@ -92,7 +92,7 @@ public class Slf4jReporterTest {
         when(logger.isErrorEnabled(marker)).thenReturn(true);
 
         errorReporter.report(this.<Gauge>map(),
-                this.<Counter>map(),
+                this.<CounterMetric>map(),
                 map("test.histogram", histogram),
                 this.<Meter>map(),
                 this.<Timer>map());
@@ -125,7 +125,7 @@ public class Slf4jReporterTest {
         when(logger.isErrorEnabled(marker)).thenReturn(true);
 
         errorReporter.report(this.<Gauge>map(),
-                this.<Counter>map(),
+                this.<CounterMetric>map(),
                 this.<Histogram>map(),
                 map("test.meter", meter),
                 this.<Timer>map());
@@ -170,7 +170,7 @@ public class Slf4jReporterTest {
         when(logger.isErrorEnabled(marker)).thenReturn(true);
 
         errorReporter.report(this.<Gauge>map(),
-                this.<Counter>map(),
+                this.<CounterMetric>map(),
                 this.<Histogram>map(),
                 this.<Meter>map(),
                 map("test.another.timer", timer));
@@ -202,7 +202,7 @@ public class Slf4jReporterTest {
     public void reportsGaugeValues() throws Exception {
         when(logger.isInfoEnabled(marker)).thenReturn(true);
         infoReporter.report(map("gauge", gauge("value")),
-                this.<Counter>map(),
+                this.<CounterMetric>map(),
                 this.<Histogram>map(),
                 this.<Meter>map(),
                 this.<Timer>map());
@@ -212,7 +212,7 @@ public class Slf4jReporterTest {
 
     @Test
     public void reportsCounterValues() throws Exception {
-        final Counter counter = mock(Counter.class);
+        final CounterMetric counter = mock(CounterMetric.class);
         when(counter.getCount()).thenReturn(100L);
         when(logger.isInfoEnabled(marker)).thenReturn(true);
 
@@ -246,7 +246,7 @@ public class Slf4jReporterTest {
         when(logger.isInfoEnabled(marker)).thenReturn(true);
 
         infoReporter.report(this.<Gauge>map(),
-                this.<Counter>map(),
+                this.<CounterMetric>map(),
                 map("test.histogram", histogram),
                 this.<Meter>map(),
                 this.<Timer>map());
@@ -279,7 +279,7 @@ public class Slf4jReporterTest {
         when(logger.isInfoEnabled(marker)).thenReturn(true);
 
         infoReporter.report(this.<Gauge>map(),
-                this.<Counter>map(),
+                this.<CounterMetric>map(),
                 this.<Histogram>map(),
                 map("test.meter", meter),
                 this.<Timer>map());
@@ -323,7 +323,7 @@ public class Slf4jReporterTest {
         when(logger.isInfoEnabled(marker)).thenReturn(true);
 
         infoReporter.report(this.<Gauge>map(),
-                this.<Counter>map(),
+                this.<CounterMetric>map(),
                 this.<Histogram>map(),
                 this.<Meter>map(),
                 map("test.another.timer", timer));

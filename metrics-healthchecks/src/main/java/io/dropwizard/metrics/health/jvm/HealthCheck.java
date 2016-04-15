@@ -1,4 +1,4 @@
-package io.dropwizard.metrics.health;
+package io.dropwizard.metrics.health.jvm;
 
 /**
  * A health check for a component of your application.
@@ -167,7 +167,7 @@ public abstract class HealthCheck {
      * @return if the component is healthy, a healthy {@link Result}; otherwise, an unhealthy {@link
      *         Result} with a descriptive error message or exception
      */
-    public Result execute() {
+    public Result executeCheck() {
         try {
             return check();
         } catch (Exception e) {

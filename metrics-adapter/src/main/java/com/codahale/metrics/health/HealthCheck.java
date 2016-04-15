@@ -6,10 +6,10 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 @Deprecated
-public abstract class HealthCheck extends io.dropwizard.metrics.health.HealthCheck {
+public abstract class HealthCheck extends io.dropwizard.metrics.health.jvm.HealthCheck {
 
 	@Deprecated
-	public static class Result extends io.dropwizard.metrics.health.HealthCheck.Result {
+	public static class Result extends io.dropwizard.metrics.health.jvm.HealthCheck.Result {
 		private static final Result HEALTHY = new Result(true, null, null);
 
 		public static Result healthy() {
@@ -40,16 +40,16 @@ public abstract class HealthCheck extends io.dropwizard.metrics.health.HealthChe
 			super(isHealthy, message, error);
 		}
 		
-		public static Result of(io.dropwizard.metrics.health.HealthCheck.Result res){
+		public static Result of(io.dropwizard.metrics.health.jvm.HealthCheck.Result res){
 			if(res instanceof Result){
 				return (Result) res;
 			} else {
 				return new Result(res.isHealthy(), res.getMessage(), res.getError());
 			}
 		}
-		public static SortedMap<String, Result> of(SortedMap<String, io.dropwizard.metrics.health.HealthCheck.Result> results){
+		public static SortedMap<String, Result> of(SortedMap<String, io.dropwizard.metrics.health.jvm.HealthCheck.Result> results){
 			SortedMap<String, Result> items = new TreeMap<>();
-			for(Map.Entry<String, io.dropwizard.metrics.health.HealthCheck.Result> result: results.entrySet()){
+			for(Map.Entry<String, io.dropwizard.metrics.health.jvm.HealthCheck.Result> result: results.entrySet()){
 				items.put(result.getKey(), of(result.getValue()));
 			}
 			

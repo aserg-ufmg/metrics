@@ -21,7 +21,7 @@ public interface GraphiteSender extends Closeable{
 	 * @param timestamp    the timestamp of the metric
 	 * @throws IOException if there was an error sending the metric
 	 */
-	public void send(String name, String value, long timestamp)
+	public void sendData(String name, String value, long timestamp)
 			throws IOException;
 
 	/**
@@ -29,7 +29,7 @@ public interface GraphiteSender extends Closeable{
 	 *
 	 * @throws IOException
 	 */
-	void flush() throws IOException;
+	void flushData() throws IOException;
 
 	/**
 	 * Returns true if ready to send data

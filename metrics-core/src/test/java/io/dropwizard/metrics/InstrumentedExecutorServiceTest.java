@@ -3,7 +3,7 @@ package io.dropwizard.metrics;
 import org.junit.After;
 import org.junit.Test;
 
-import io.dropwizard.metrics.Counter;
+import io.dropwizard.metrics.CounterMetric;
 import io.dropwizard.metrics.InstrumentedExecutorService;
 import io.dropwizard.metrics.Meter;
 import io.dropwizard.metrics.MetricRegistry;
@@ -25,7 +25,7 @@ public class InstrumentedExecutorServiceTest {
         this.executor = Executors.newCachedThreadPool();
         final InstrumentedExecutorService instrumentedExecutorService = new InstrumentedExecutorService(executor, registry, "xs");
         final Meter submitted = registry.meter("xs.submitted");
-        final Counter running = registry.counter("xs.running");
+        final CounterMetric running = registry.counter("xs.running");
         final Meter completed = registry.meter("xs.completed");
         final Timer duration = registry.timer("xs.duration");
         final Meter rejected = registry.meter("xs.rejected");
@@ -64,7 +64,7 @@ public class InstrumentedExecutorServiceTest {
         final CountDownLatch finish = new CountDownLatch(1);
 
         final Meter submitted = registry.meter("r.submitted");
-        final Counter running = registry.counter("r.running");
+        final CounterMetric running = registry.counter("r.running");
         final Meter completed = registry.meter("r.completed");
         final Timer duration = registry.timer("r.duration");
         final Meter rejected = registry.meter("r.rejected");

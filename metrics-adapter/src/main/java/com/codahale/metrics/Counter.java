@@ -4,13 +4,13 @@ import io.dropwizard.metrics.Counting;
 
 @Deprecated
 public class Counter implements Metric, Counting {
-	final io.dropwizard.metrics.Counter counter;
+	final io.dropwizard.metrics.CounterMetric counter;
 
-	public Counter(io.dropwizard.metrics.Counter counter) {
+	public Counter(io.dropwizard.metrics.CounterMetric counter) {
 		this.counter = counter;
 	}
 	public Counter() {
-		this.counter = new io.dropwizard.metrics.Counter();
+		this.counter = new io.dropwizard.metrics.CounterMetric();
 	}
 
 	public void inc() {

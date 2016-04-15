@@ -19,7 +19,7 @@ public interface MetricRegistryListener extends EventListener {
         }
 
         @Override
-        public void onCounterAdded(MetricName name, Counter counter) {
+        public void onCounterAdded(MetricName name, CounterMetric counter) {
         }
 
         @Override
@@ -67,15 +67,15 @@ public interface MetricRegistryListener extends EventListener {
     void onGaugeRemoved(MetricName name);
 
     /**
-     * Called when a {@link Counter} is added to the registry.
+     * Called when a {@link CounterMetric} is added to the registry.
      *
      * @param name    the counter's name
      * @param counter the counter
      */
-    void onCounterAdded(MetricName name, Counter counter);
+    void onCounterAdded(MetricName name, CounterMetric counter);
 
     /**
-     * Called when a {@link Counter} is removed from the registry.
+     * Called when a {@link CounterMetric} is removed from the registry.
      *
      * @param name the counter's name
      */

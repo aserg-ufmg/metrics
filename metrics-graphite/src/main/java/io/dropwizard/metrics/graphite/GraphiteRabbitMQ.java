@@ -131,7 +131,7 @@ public class GraphiteRabbitMQ implements GraphiteSender {
     }
 
     @Override
-    public void send(String name, String value, long timestamp) throws IOException {
+    public void sendData(String name, String value, long timestamp) throws IOException {
         try {
             final String sanitizedName = sanitize(name);
             final String sanitizedValue = sanitize(value);
@@ -150,7 +150,7 @@ public class GraphiteRabbitMQ implements GraphiteSender {
     }
 
     @Override
-    public void flush() throws IOException {
+    public void flushData() throws IOException {
     	  // Nothing to do
     }
 

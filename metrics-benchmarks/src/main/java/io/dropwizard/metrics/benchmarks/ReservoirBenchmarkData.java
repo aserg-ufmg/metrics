@@ -16,7 +16,7 @@ import io.dropwizard.metrics.UniformReservoir;
 import java.util.concurrent.TimeUnit;
 
 @State(Scope.Benchmark)
-public class ReservoirBenchmark {
+public class ReservoirBenchmarkData {
 
     private final UniformReservoir uniform = new UniformReservoir();
     private final ExponentiallyDecayingReservoir exponential = new ExponentiallyDecayingReservoir();
@@ -52,7 +52,7 @@ public class ReservoirBenchmark {
 
     public static void main(String[] args) throws RunnerException {
         Options opt = new OptionsBuilder()
-                .include(".*" + ReservoirBenchmark.class.getSimpleName() + ".*")
+                .include(".*" + ReservoirBenchmarkData.class.getSimpleName() + ".*")
                 .warmupIterations(3)
                 .measurementIterations(5)
                 .threads(4)

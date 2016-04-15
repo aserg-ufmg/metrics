@@ -11,8 +11,6 @@ import java.util.Set;
  * A utility class for detecting deadlocked threads.
  */
 public class ThreadDeadlockDetector {
-    private static final int MAX_STACK_TRACE_DEPTH = 100;
-
     private final ThreadMXBean threads;
 
     /**
@@ -41,7 +39,7 @@ public class ThreadDeadlockDetector {
         final long[] ids = threads.findDeadlockedThreads();
         if (ids != null) {
             final Set<String> deadlocks = new HashSet<String>();
-            for (ThreadInfo info : threads.getThreadInfo(ids, MAX_STACK_TRACE_DEPTH)) {
+            for (ThreadInfo info : threads.getThreadInfo(ids, ThreadDeadlockDetectorTest.MAX_STACK_TRACE_DEPTH)) {
                 final StringBuilder stackTrace = new StringBuilder();
                 for (StackTraceElement element : info.getStackTrace()) {
                     stackTrace.append("\t at ")

@@ -4,8 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import io.dropwizard.metrics.health.HealthCheckRegistry;
-import io.dropwizard.metrics.health.SharedHealthCheckRegistries;
-
+import io.dropwizard.metrics.health.jvm.SharedHealthCheckRegistries;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class SharedMetricRegistriesTest {

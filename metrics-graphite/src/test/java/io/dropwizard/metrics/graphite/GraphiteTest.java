@@ -123,7 +123,7 @@ public class GraphiteTest {
     public void writesValuesToGraphite() throws Exception {
         graphite = new Graphite(address, socketFactory);
         graphite.connect();
-        graphite.send("name", "value", 100);
+        graphite.sendData("name", "value", 100);
         graphite.close();
 
         assertThat(output.toString())
@@ -134,7 +134,7 @@ public class GraphiteTest {
     public void sanitizesNames() throws Exception {
         graphite = new Graphite(address, socketFactory);
         graphite.connect();
-        graphite.send("name woo", "value", 100);
+        graphite.sendData("name woo", "value", 100);
         graphite.close();
 
         assertThat(output.toString())
@@ -145,7 +145,7 @@ public class GraphiteTest {
     public void sanitizesValues() throws Exception {
         graphite = new Graphite(address, socketFactory);
         graphite.connect();
-        graphite.send("name", "value woo", 100);
+        graphite.sendData("name", "value woo", 100);
         graphite.close();
 
         assertThat(output.toString())

@@ -114,7 +114,7 @@ class UnsafeLongAdderImpl extends UnsafeStriped64 implements LongAdder, Serializ
      * concurrently updating.
      */
     public void reset() {
-        internalReset(0L);
+        internalResetData(0L);
     }
 
     /**

@@ -8,19 +8,19 @@ import java.util.concurrent.TimeUnit;
 /**
  * A reporter which outputs measurements to a {@link PrintStream}, like {@code System.out}.
  */
-public class ConsoleReporter extends ScheduledReporter {
+public class ConsolePrinter extends ScheduledReporter {
     /**
-     * Returns a new {@link Builder} for {@link ConsoleReporter}.
+     * Returns a new {@link Builder} for {@link ConsolePrinter}.
      *
      * @param registry the registry to report
-     * @return a {@link Builder} instance for a {@link ConsoleReporter}
+     * @return a {@link Builder} instance for a {@link ConsolePrinter}
      */
     public static Builder forRegistry(MetricRegistry registry) {
         return new Builder(registry);
     }
 
     /**
-     * A builder for {@link ConsoleReporter} instances. Defaults to using the default locale and
+     * A builder for {@link ConsolePrinter} instances. Defaults to using the default locale and
      * time zone, writing to {@code System.out}, converting rates to events/second, converting
      * durations to milliseconds, and not filtering metrics.
      */
@@ -123,12 +123,12 @@ public class ConsoleReporter extends ScheduledReporter {
         }
 
         /**
-         * Builds a {@link ConsoleReporter} with the given properties.
+         * Builds a {@link ConsolePrinter} with the given properties.
          *
-         * @return a {@link ConsoleReporter}
+         * @return a {@link ConsolePrinter}
          */
-        public ConsoleReporter build() {
-            return new ConsoleReporter(registry,
+        public ConsolePrinter build() {
+            return new ConsolePrinter(registry,
                                        output,
                                        locale,
                                        clock,
@@ -141,12 +141,18 @@ public class ConsoleReporter extends ScheduledReporter {
 
     private static final int CONSOLE_WIDTH = 80;
 
-    private final PrintStream output;
-    private final Locale locale;
+    final PrintStream output;
+    final Locale locale;
     private final Clock clock;
     private final DateFormat dateFormat;
 
-    private ConsoleReporter(MetricRegistry registry,
+	private final String durationUnit;
+
+	protected final double rateFactor;
+
+	protected final double durationFactor;
+
+    private ConsolePrinter(MetricRegistry registry,
                             PrintStream output,
                             Locale locale,
                             Clock clock,
@@ -162,11 +168,14 @@ public class ConsoleReporter extends ScheduledReporter {
                                                          DateFormat.MEDIUM,
                                                          locale);
         dateFormat.setTimeZone(timeZone);
+        this.durationUnit = durationUnit.toString().toLowerCase(Locale.US);
+        this.rateFactor = rateUnit.toSeconds(1);
+        this.durationFactor = 1.0 / durationUnit.toNanos(1);
     }
 
     @Override
     public void report(SortedMap<MetricName, Gauge> gauges,
-                       SortedMap<MetricName, Counter> counters,
+                       SortedMap<MetricName, CounterMetric> counters,
                        SortedMap<MetricName, Histogram> histograms,
                        SortedMap<MetricName, Meter> meters,
                        SortedMap<MetricName, Timer> timers) {
@@ -185,7 +194,7 @@ public class ConsoleReporter extends ScheduledReporter {
 
         if (!counters.isEmpty()) {
             printWithBanner("-- Counters", '-');
-            for (Map.Entry<MetricName, Counter> entry : counters.entrySet()) {
+            for (Map.Entry<MetricName, CounterMetric> entry : counters.entrySet()) {
                 output.println(entry.getKey());
                 printCounter(entry);
             }
@@ -205,7 +214,7 @@ public class ConsoleReporter extends ScheduledReporter {
             printWithBanner("-- Meters", '-');
             for (Map.Entry<MetricName, Meter> entry : meters.entrySet()) {
                 output.println(entry.getKey());
-                printMeter(entry.getValue());
+                entry.getValue().printMeter(this);
             }
             output.println();
         }
@@ -223,15 +232,7 @@ public class ConsoleReporter extends ScheduledReporter {
         output.flush();
     }
 
-    private void printMeter(Meter meter) {
-        output.printf(locale, "             count = %d%n", meter.getCount());
-        output.printf(locale, "         mean rate = %2.2f events/%s%n", convertRate(meter.getMeanRate()), getRateUnit());
-        output.printf(locale, "     1-minute rate = %2.2f events/%s%n", convertRate(meter.getOneMinuteRate()), getRateUnit());
-        output.printf(locale, "     5-minute rate = %2.2f events/%s%n", convertRate(meter.getFiveMinuteRate()), getRateUnit());
-        output.printf(locale, "    15-minute rate = %2.2f events/%s%n", convertRate(meter.getFifteenMinuteRate()), getRateUnit());
-    }
-
-    private void printCounter(Map.Entry<MetricName, Counter> entry) {
+    private void printCounter(Map.Entry<MetricName, CounterMetric> entry) {
         output.printf(locale, "             count = %d%n", entry.getValue().getCount());
     }
 
@@ -282,4 +283,16 @@ public class ConsoleReporter extends ScheduledReporter {
         }
         output.println();
     }
+
+	protected double convertRate(double rate) {
+	    return rate * rateFactor;
+	}
+
+	protected double convertDuration(double duration) {
+	    return duration * durationFactor;
+	}
+
+	protected String getDurationUnit() {
+	    return durationUnit;
+	}
 }

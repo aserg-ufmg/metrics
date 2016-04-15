@@ -53,4 +53,11 @@ public class Histogram implements Metric, Sampling, Counting {
     public Snapshot getSnapshot() {
         return reservoir.getSnapshot();
     }
+
+	void update(Timer timer, long duration) {
+	    if (duration >= 0) {
+	        update(duration);
+	        timer.meter.mark();
+	    }
+	}
 }

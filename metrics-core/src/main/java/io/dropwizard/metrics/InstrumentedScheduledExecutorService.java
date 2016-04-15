@@ -19,13 +19,13 @@ public class InstrumentedScheduledExecutorService implements ScheduledExecutorSe
     private final ScheduledExecutorService delegate;
 
     private final Meter submitted;
-    private final Counter running;
+    private final CounterMetric running;
     private final Meter completed;
     private final Timer duration;
 
     private final Meter scheduledOnce;
     private final Meter scheduledRepetitively;
-    private final Counter scheduledOverrun;
+    private final CounterMetric scheduledOverrun;
     private final Histogram percentOfPeriod;
 
     /**

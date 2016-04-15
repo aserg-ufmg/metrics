@@ -1,5 +1,7 @@
 package io.dropwizard.metrics.jdbi.strategies;
 
+import java.util.Arrays;
+
 
 /**
  * Adds statistics for JDBI queries that set the {@link NameStrategies#STATEMENT_GROUP} and {@link
@@ -12,4 +14,8 @@ public class ContextNameStrategy extends DelegatingStatementNameStrategy {
               NameStrategies.CONTEXT_NAME,
               NameStrategies.NAIVE_NAME);
     }
+
+	protected void registerStrategies(StatementNameStrategy... strategies) {
+	    this.strategies.addAll(Arrays.asList(strategies));
+	}
 }

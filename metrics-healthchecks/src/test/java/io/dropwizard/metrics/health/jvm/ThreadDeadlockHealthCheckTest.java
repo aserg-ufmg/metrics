@@ -3,8 +3,6 @@ package io.dropwizard.metrics.health.jvm;
 import org.junit.Test;
 
 import io.dropwizard.metrics.jvm.ThreadDeadlockDetector;
-
-import io.dropwizard.metrics.health.HealthCheck;
 import io.dropwizard.metrics.health.jvm.ThreadDeadlockHealthCheck;
 
 import java.util.Collections;
@@ -23,7 +21,7 @@ public class ThreadDeadlockHealthCheckTest {
 
         when(detector.getDeadlockedThreads()).thenReturn(Collections.<String>emptySet());
 
-        assertThat(healthCheck.execute().isHealthy())
+        assertThat(healthCheck.executeCheck().isHealthy())
                 .isTrue();
     }
 
@@ -38,7 +36,7 @@ public class ThreadDeadlockHealthCheckTest {
 
         when(detector.getDeadlockedThreads()).thenReturn(threads);
 
-        final HealthCheck.Result result = healthCheck.execute();
+        final HealthCheck.Result result = healthCheck.executeCheck();
 
         assertThat(result.isHealthy())
                 .isFalse();
@@ -50,7 +48,7 @@ public class ThreadDeadlockHealthCheckTest {
     @Test
     public void automaticallyUsesThePlatformThreadBeans() throws Exception {
         final ThreadDeadlockHealthCheck healthCheck = new ThreadDeadlockHealthCheck();
-        assertThat(healthCheck.execute().isHealthy())
+        assertThat(healthCheck.executeCheck().isHealthy())
                 .isTrue();
     }
 }

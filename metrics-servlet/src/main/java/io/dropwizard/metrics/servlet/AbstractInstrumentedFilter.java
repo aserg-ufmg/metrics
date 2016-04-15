@@ -1,8 +1,7 @@
 package io.dropwizard.metrics.servlet;
 
 import static io.dropwizard.metrics.MetricRegistry.name;
-
-import io.dropwizard.metrics.Counter;
+import io.dropwizard.metrics.CounterMetric;
 import io.dropwizard.metrics.Meter;
 import io.dropwizard.metrics.MetricRegistry;
 import io.dropwizard.metrics.Timer;
@@ -12,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
@@ -23,8 +23,26 @@ import java.util.concurrent.ConcurrentMap;
  */
 public abstract class AbstractInstrumentedFilter implements Filter {
     static final String METRIC_PREFIX = "name-prefix";
+	static final int OK = 200;
+	static final int CREATED = 201;
+	static final int NO_CONTENT = 204;
+	static final int BAD_REQUEST = 400;
+	static final int NOT_FOUND = 404;
+	protected static final String NAME_PREFIX = "responseCodes.";
+	static final int SERVER_ERROR = 500;
 
-    private final String otherMetricName;
+    protected static Map<Integer, String> createByStatusCode() {
+	    final Map<Integer, String> meterNamesByStatusCode = new HashMap<Integer, String>(6);
+	    meterNamesByStatusCode.put(OK, NAME_PREFIX + "ok");
+	    meterNamesByStatusCode.put(CREATED, NAME_PREFIX + "created");
+	    meterNamesByStatusCode.put(NO_CONTENT, NAME_PREFIX + "noContent");
+	    meterNamesByStatusCode.put(BAD_REQUEST, NAME_PREFIX + "badRequest");
+	    meterNamesByStatusCode.put(NOT_FOUND, NAME_PREFIX + "notFound");
+	    meterNamesByStatusCode.put(SERVER_ERROR, NAME_PREFIX + "serverError");
+	    return meterNamesByStatusCode;
+	}
+
+	private final String otherMetricName;
     private final Map<Integer, String> meterNamesByStatusCode;
     private final String registryAttribute;
 
@@ -33,7 +51,7 @@ public abstract class AbstractInstrumentedFilter implements Filter {
     private Meter otherMeter;
     private Meter timeoutsMeter;
     private Meter errorsMeter;
-    private Counter activeRequests;
+    private CounterMetric activeRequests;
     private Timer requestTimer;
 
 

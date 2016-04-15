@@ -108,7 +108,7 @@ public class PickledGraphiteTest {
     @Test
     public void writesValuesToGraphite() throws Exception {
         graphite.connect();
-        graphite.send("name", "value", 100);
+        graphite.sendData("name", "value", 100);
         graphite.close();
 
         assertThat(unpickleOutput())
@@ -118,8 +118,8 @@ public class PickledGraphiteTest {
     @Test
     public void writesFullBatch() throws Exception {
         graphite.connect();
-        graphite.send("name", "value", 100);
-        graphite.send("name", "value2", 100);
+        graphite.sendData("name", "value", 100);
+        graphite.sendData("name", "value2", 100);
         graphite.close();
 
         assertThat(unpickleOutput())
@@ -129,9 +129,9 @@ public class PickledGraphiteTest {
     @Test
     public void writesPastFullBatch() throws Exception {
         graphite.connect();
-        graphite.send("name", "value", 100);
-        graphite.send("name", "value2", 100);
-        graphite.send("name", "value3", 100);
+        graphite.sendData("name", "value", 100);
+        graphite.sendData("name", "value2", 100);
+        graphite.sendData("name", "value3", 100);
         graphite.close();
 
         assertThat(unpickleOutput())
@@ -141,7 +141,7 @@ public class PickledGraphiteTest {
     @Test
     public void sanitizesNames() throws Exception {
         graphite.connect();
-        graphite.send("name woo", "value", 100);
+        graphite.sendData("name woo", "value", 100);
         graphite.close();
 
         assertThat(unpickleOutput())
@@ -151,7 +151,7 @@ public class PickledGraphiteTest {
     @Test
     public void sanitizesValues() throws Exception {
         graphite.connect();
-        graphite.send("name", "value woo", 100);
+        graphite.sendData("name", "value woo", 100);
         graphite.close();
 
         assertThat(unpickleOutput())

@@ -12,6 +12,8 @@ import java.util.TreeSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.codahale.metrics.health.MetricSet;
+
 @Deprecated
 public class MetricRegistry {
 	private static final Logger LOG = LoggerFactory.getLogger(MetricRegistry.class);
@@ -56,6 +58,10 @@ public class MetricRegistry {
 			prefix = MetricName.EMPTY;
 		}
 
+		registerLoop(prefix, metrics);
+	}
+
+	private void registerLoop(MetricName prefix, MetricSet metrics) {
 		for (Map.Entry<String, Metric> entry : metrics.getMetrics().entrySet()) {
 			if (entry.getValue() instanceof MetricSet) {
 				registerAll(
@@ -176,8 +182,8 @@ public class MetricRegistry {
 	private Metric adaptMetric(final io.dropwizard.metrics.Metric metric) throws ClassNotFoundException {
 		if (metric instanceof Metric) {
 			return (Metric) metric;
-		} else if (metric instanceof io.dropwizard.metrics.Counter) {
-			return new Counter((io.dropwizard.metrics.Counter) metric);
+		} else if (metric instanceof io.dropwizard.metrics.CounterMetric) {
+			return new Counter((io.dropwizard.metrics.CounterMetric) metric);
 		} else if (metric instanceof io.dropwizard.metrics.Histogram) {
 			return new Histogram((io.dropwizard.metrics.Histogram) metric);
 		} else if (metric instanceof io.dropwizard.metrics.Meter) {

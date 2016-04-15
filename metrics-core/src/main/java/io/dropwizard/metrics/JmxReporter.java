@@ -198,9 +198,9 @@ public class JmxReporter implements Reporter, Closeable {
     // CHECKSTYLE:ON
 
     private static class JmxCounter extends AbstractBean implements JmxCounterMBean {
-        private final Counter metric;
+        private final CounterMetric metric;
 
-        private JmxCounter(Counter metric, ObjectName objectName) {
+        private JmxCounter(CounterMetric metric, ObjectName objectName) {
             super(objectName);
             this.metric = metric;
         }
@@ -549,7 +549,7 @@ public class JmxReporter implements Reporter, Closeable {
         }
 
         @Override
-        public void onCounterAdded(MetricName name, Counter counter) {
+        public void onCounterAdded(MetricName name, CounterMetric counter) {
             try {
                 if (filter.matches(name, counter)) {
                     final ObjectName objectName = createName("counters", name);

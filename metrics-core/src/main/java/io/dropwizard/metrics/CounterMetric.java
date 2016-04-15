@@ -3,10 +3,10 @@ package io.dropwizard.metrics;
 /**
  * An incrementing and decrementing counter metric.
  */
-public class Counter implements Metric, Counting {
+public class CounterMetric implements Metric, Counting {
     private final LongAdder count;
 
-    public Counter() {
+    public CounterMetric() {
         this.count = LongAdderFactory.create();
     }
 

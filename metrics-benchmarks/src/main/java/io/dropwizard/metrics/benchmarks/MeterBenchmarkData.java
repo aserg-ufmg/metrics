@@ -8,25 +8,25 @@ import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
 
-import io.dropwizard.metrics.Counter;
+import io.dropwizard.metrics.Meter;
 
 @State(Scope.Benchmark)
-public class CounterBenchmark {
+public class MeterBenchmarkData {
 
-    private final Counter counter = new Counter();
+    private final Meter meter = new Meter();
 
     // It's intentionally not declared as final to avoid constant folding
     private long nextValue = 0xFBFBABBA;
 
     @Benchmark
-    public Object perfIncrement() {
-        counter.inc(nextValue); 
-        return counter;
+    public Object perfMark() {
+        meter.mark(nextValue);
+        return meter;
     }
 
     public static void main(String[] args) throws RunnerException {
         Options opt = new OptionsBuilder()
-                .include(".*" + CounterBenchmark.class.getSimpleName() + ".*")
+                .include(".*" + MeterBenchmarkData.class.getSimpleName() + ".*")
                 .warmupIterations(3)
                 .measurementIterations(5)
                 .threads(4)

@@ -7,6 +7,7 @@ import org.junit.rules.TemporaryFolder;
 
 import java.io.*;
 import java.nio.CharBuffer;
+import java.nio.charset.Charset;
 import java.util.Locale;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -23,6 +24,8 @@ public class CsvReporterTest {
 
     private File dataDirectory;
     private CsvReporter reporter;
+
+	public static final Charset UTF_8 = Charset.forName("UTF-8");
 
     @Before
     public void setUp() throws Exception {
@@ -45,7 +48,7 @@ public class CsvReporterTest {
         when(gauge.getValue()).thenReturn(1);
 
         reporter.report(map("gauge", gauge),
-                        this.<Counter>map(),
+                        this.<CounterMetric>map(),
                         this.<Histogram>map(),
                         this.<Meter>map(),
                         this.<Timer>map());
@@ -59,7 +62,7 @@ public class CsvReporterTest {
 
     @Test
     public void reportsCounterValues() throws Exception {
-        final Counter counter = mock(Counter.class);
+        final CounterMetric counter = mock(CounterMetric.class);
         when(counter.getCount()).thenReturn(100L);
 
         reporter.report(this.<Gauge>map(),
@@ -95,7 +98,7 @@ public class CsvReporterTest {
         when(histogram.getSnapshot()).thenReturn(snapshot);
 
         reporter.report(this.<Gauge>map(),
-                        this.<Counter>map(),
+                        this.<CounterMetric>map(),
                         map("test.histogram", histogram),
                         this.<Meter>map(),
                         this.<Timer>map());
@@ -117,7 +120,7 @@ public class CsvReporterTest {
         when(meter.getFifteenMinuteRate()).thenReturn(5.0);
 
         reporter.report(this.<Gauge>map(),
-                        this.<Counter>map(),
+                        this.<CounterMetric>map(),
                         this.<Histogram>map(),
                         map("test.meter", meter),
                         this.<Timer>map());
@@ -153,7 +156,7 @@ public class CsvReporterTest {
         when(timer.getSnapshot()).thenReturn(snapshot);
 
         reporter.report(this.<Gauge>map(),
-                        this.<Counter>map(),
+                        this.<CounterMetric>map(),
                         this.<Histogram>map(),
                         this.<Meter>map(),
                         map("test.another.timer", timer));
@@ -178,7 +181,7 @@ public class CsvReporterTest {
         when(gauge.getValue()).thenReturn(1);
 
         reporter.report(map("gauge", gauge),
-                this.<Counter>map(),
+                this.<CounterMetric>map(),
                 this.<Histogram>map(),
                 this.<Meter>map(),
                 this.<Timer>map());

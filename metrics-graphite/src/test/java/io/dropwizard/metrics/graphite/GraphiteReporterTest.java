@@ -1,12 +1,13 @@
 package io.dropwizard.metrics.graphite;
 
 import io.dropwizard.metrics.Clock;
-import io.dropwizard.metrics.Counter;
+import io.dropwizard.metrics.CounterMetric;
 import io.dropwizard.metrics.Gauge;
 import io.dropwizard.metrics.Histogram;
 import io.dropwizard.metrics.Meter;
 import io.dropwizard.metrics.MetricFilter;
 import io.dropwizard.metrics.MetricRegistry;
+import io.dropwizard.metrics.ScheduledReporter;
 import io.dropwizard.metrics.Snapshot;
 import io.dropwizard.metrics.Timer;
 
@@ -28,7 +29,7 @@ public class GraphiteReporterTest {
     private final Clock clock = mock(Clock.class);
     private final Graphite graphite = mock(Graphite.class);
     private final MetricRegistry registry = mock(MetricRegistry.class);
-    private final GraphiteReporter reporter = GraphiteReporter.forRegistry(registry)
+    private final ScheduledReporter reporter = GraphiteReporter.forRegistry(registry)
                                                               .withClock(clock)
                                                               .prefixedWith("prefix")
                                                               .convertRatesTo(TimeUnit.SECONDS)
@@ -44,7 +45,7 @@ public class GraphiteReporterTest {
     @Test
     public void doesNotReportStringGaugeValues() throws Exception {
         reporter.report(map("gauge", gauge("value")),
-                        this.<Counter>map(),
+                        this.<CounterMetric>map(),
                         this.<Histogram>map(),
                         this.<Meter>map(),
                         this.<Timer>map());
@@ -52,8 +53,8 @@ public class GraphiteReporterTest {
         final InOrder inOrder = inOrder(graphite);
         inOrder.verify(graphite).isConnected();
         inOrder.verify(graphite).connect();
-        inOrder.verify(graphite, never()).send("prefix.gauge", "value", timestamp);
-        inOrder.verify(graphite).flush();
+        inOrder.verify(graphite, never()).sendData("prefix.gauge", "value", timestamp);
+        inOrder.verify(graphite).flushData();
 
         verifyNoMoreInteractions(graphite);
     }
@@ -61,7 +62,7 @@ public class GraphiteReporterTest {
     @Test
     public void reportsByteGaugeValues() throws Exception {
         reporter.report(map("gauge", gauge((byte) 1)),
-                        this.<Counter>map(),
+                        this.<CounterMetric>map(),
                         this.<Histogram>map(),
                         this.<Meter>map(),
                         this.<Timer>map());
@@ -69,8 +70,8 @@ public class GraphiteReporterTest {
         final InOrder inOrder = inOrder(graphite);
         inOrder.verify(graphite).isConnected();
         inOrder.verify(graphite).connect();
-        inOrder.verify(graphite).send("prefix.gauge", "1", timestamp);
-        inOrder.verify(graphite).flush();
+        inOrder.verify(graphite).sendData("prefix.gauge", "1", timestamp);
+        inOrder.verify(graphite).flushData();
 
         verifyNoMoreInteractions(graphite);
     }
@@ -78,7 +79,7 @@ public class GraphiteReporterTest {
     @Test
     public void reportsShortGaugeValues() throws Exception {
         reporter.report(map("gauge", gauge((short) 1)),
-                        this.<Counter>map(),
+                        this.<CounterMetric>map(),
                         this.<Histogram>map(),
                         this.<Meter>map(),
                         this.<Timer>map());
@@ -86,8 +87,8 @@ public class GraphiteReporterTest {
         final InOrder inOrder = inOrder(graphite);
         inOrder.verify(graphite).isConnected();
         inOrder.verify(graphite).connect();
-        inOrder.verify(graphite).send("prefix.gauge", "1", timestamp);
-        inOrder.verify(graphite).flush();
+        inOrder.verify(graphite).sendData("prefix.gauge", "1", timestamp);
+        inOrder.verify(graphite).flushData();
 
         verifyNoMoreInteractions(graphite);
     }
@@ -95,7 +96,7 @@ public class GraphiteReporterTest {
     @Test
     public void reportsIntegerGaugeValues() throws Exception {
         reporter.report(map("gauge", gauge(1)),
-                        this.<Counter>map(),
+                        this.<CounterMetric>map(),
                         this.<Histogram>map(),
                         this.<Meter>map(),
                         this.<Timer>map());
@@ -103,8 +104,8 @@ public class GraphiteReporterTest {
         final InOrder inOrder = inOrder(graphite);
         inOrder.verify(graphite).isConnected();
         inOrder.verify(graphite).connect();
-        inOrder.verify(graphite).send("prefix.gauge", "1", timestamp);
-        inOrder.verify(graphite).flush();
+        inOrder.verify(graphite).sendData("prefix.gauge", "1", timestamp);
+        inOrder.verify(graphite).flushData();
 
         verifyNoMoreInteractions(graphite);
     }
@@ -112,7 +113,7 @@ public class GraphiteReporterTest {
     @Test
     public void reportsLongGaugeValues() throws Exception {
         reporter.report(map("gauge", gauge(1L)),
-                        this.<Counter>map(),
+                        this.<CounterMetric>map(),
                         this.<Histogram>map(),
                         this.<Meter>map(),
                         this.<Timer>map());
@@ -120,8 +121,8 @@ public class GraphiteReporterTest {
         final InOrder inOrder = inOrder(graphite);
         inOrder.verify(graphite).isConnected();
         inOrder.verify(graphite).connect();
-        inOrder.verify(graphite).send("prefix.gauge", "1", timestamp);
-        inOrder.verify(graphite).flush();
+        inOrder.verify(graphite).sendData("prefix.gauge", "1", timestamp);
+        inOrder.verify(graphite).flushData();
 
         verifyNoMoreInteractions(graphite);
     }
@@ -129,7 +130,7 @@ public class GraphiteReporterTest {
     @Test
     public void reportsFloatGaugeValues() throws Exception {
         reporter.report(map("gauge", gauge(1.1f)),
-                        this.<Counter>map(),
+                        this.<CounterMetric>map(),
                         this.<Histogram>map(),
                         this.<Meter>map(),
                         this.<Timer>map());
@@ -137,8 +138,8 @@ public class GraphiteReporterTest {
         final InOrder inOrder = inOrder(graphite);
         inOrder.verify(graphite).isConnected();
         inOrder.verify(graphite).connect();
-        inOrder.verify(graphite).send("prefix.gauge", "1.10", timestamp);
-        inOrder.verify(graphite).flush();
+        inOrder.verify(graphite).sendData("prefix.gauge", "1.10", timestamp);
+        inOrder.verify(graphite).flushData();
 
         verifyNoMoreInteractions(graphite);
     }
@@ -146,7 +147,7 @@ public class GraphiteReporterTest {
     @Test
     public void reportsDoubleGaugeValues() throws Exception {
         reporter.report(map("gauge", gauge(1.1)),
-                        this.<Counter>map(),
+                        this.<CounterMetric>map(),
                         this.<Histogram>map(),
                         this.<Meter>map(),
                         this.<Timer>map());
@@ -154,19 +155,19 @@ public class GraphiteReporterTest {
         final InOrder inOrder = inOrder(graphite);
         inOrder.verify(graphite).isConnected();
         inOrder.verify(graphite).connect();
-        inOrder.verify(graphite).send("prefix.gauge", "1.10", timestamp);
-        inOrder.verify(graphite).flush();
+        inOrder.verify(graphite).sendData("prefix.gauge", "1.10", timestamp);
+        inOrder.verify(graphite).flushData();
 
         verifyNoMoreInteractions(graphite);
     }
 
     @Test
     public void reportsCounters() throws Exception {
-        final Counter counter = mock(Counter.class);
+        final CounterMetric counter = mock(CounterMetric.class);
         when(counter.getCount()).thenReturn(100L);
 
         reporter.report(this.<Gauge>map(),
-                        this.<Counter>map("counter", counter),
+                        this.<CounterMetric>map("counter", counter),
                         this.<Histogram>map(),
                         this.<Meter>map(),
                         this.<Timer>map());
@@ -174,8 +175,8 @@ public class GraphiteReporterTest {
         final InOrder inOrder = inOrder(graphite);
         inOrder.verify(graphite).isConnected();
         inOrder.verify(graphite).connect();
-        inOrder.verify(graphite).send("prefix.counter.count", "100", timestamp);
-        inOrder.verify(graphite).flush();
+        inOrder.verify(graphite).sendData("prefix.counter.count", "100", timestamp);
+        inOrder.verify(graphite).flushData();
 
         verifyNoMoreInteractions(graphite);
     }
@@ -200,7 +201,7 @@ public class GraphiteReporterTest {
         when(histogram.getSnapshot()).thenReturn(snapshot);
 
         reporter.report(this.<Gauge>map(),
-                        this.<Counter>map(),
+                        this.<CounterMetric>map(),
                         this.<Histogram>map("histogram", histogram),
                         this.<Meter>map(),
                         this.<Timer>map());
@@ -208,18 +209,18 @@ public class GraphiteReporterTest {
         final InOrder inOrder = inOrder(graphite);
         inOrder.verify(graphite).isConnected();
         inOrder.verify(graphite).connect();
-        inOrder.verify(graphite).send("prefix.histogram.count", "1", timestamp);
-        inOrder.verify(graphite).send("prefix.histogram.max", "2", timestamp);
-        inOrder.verify(graphite).send("prefix.histogram.mean", "3.00", timestamp);
-        inOrder.verify(graphite).send("prefix.histogram.min", "4", timestamp);
-        inOrder.verify(graphite).send("prefix.histogram.stddev", "5.00", timestamp);
-        inOrder.verify(graphite).send("prefix.histogram.p50", "6.00", timestamp);
-        inOrder.verify(graphite).send("prefix.histogram.p75", "7.00", timestamp);
-        inOrder.verify(graphite).send("prefix.histogram.p95", "8.00", timestamp);
-        inOrder.verify(graphite).send("prefix.histogram.p98", "9.00", timestamp);
-        inOrder.verify(graphite).send("prefix.histogram.p99", "10.00", timestamp);
-        inOrder.verify(graphite).send("prefix.histogram.p999", "11.00", timestamp);
-        inOrder.verify(graphite).flush();
+        inOrder.verify(graphite).sendData("prefix.histogram.count", "1", timestamp);
+        inOrder.verify(graphite).sendData("prefix.histogram.max", "2", timestamp);
+        inOrder.verify(graphite).sendData("prefix.histogram.mean", "3.00", timestamp);
+        inOrder.verify(graphite).sendData("prefix.histogram.min", "4", timestamp);
+        inOrder.verify(graphite).sendData("prefix.histogram.stddev", "5.00", timestamp);
+        inOrder.verify(graphite).sendData("prefix.histogram.p50", "6.00", timestamp);
+        inOrder.verify(graphite).sendData("prefix.histogram.p75", "7.00", timestamp);
+        inOrder.verify(graphite).sendData("prefix.histogram.p95", "8.00", timestamp);
+        inOrder.verify(graphite).sendData("prefix.histogram.p98", "9.00", timestamp);
+        inOrder.verify(graphite).sendData("prefix.histogram.p99", "10.00", timestamp);
+        inOrder.verify(graphite).sendData("prefix.histogram.p999", "11.00", timestamp);
+        inOrder.verify(graphite).flushData();
 
         verifyNoMoreInteractions(graphite);
     }
@@ -234,7 +235,7 @@ public class GraphiteReporterTest {
         when(meter.getMeanRate()).thenReturn(5.0);
 
         reporter.report(this.<Gauge>map(),
-                        this.<Counter>map(),
+                        this.<CounterMetric>map(),
                         this.<Histogram>map(),
                         this.<Meter>map("meter", meter),
                         this.<Timer>map());
@@ -242,12 +243,12 @@ public class GraphiteReporterTest {
         final InOrder inOrder = inOrder(graphite);
         inOrder.verify(graphite).isConnected();
         inOrder.verify(graphite).connect();
-        inOrder.verify(graphite).send("prefix.meter.count", "1", timestamp);
-        inOrder.verify(graphite).send("prefix.meter.m1_rate", "2.00", timestamp);
-        inOrder.verify(graphite).send("prefix.meter.m5_rate", "3.00", timestamp);
-        inOrder.verify(graphite).send("prefix.meter.m15_rate", "4.00", timestamp);
-        inOrder.verify(graphite).send("prefix.meter.mean_rate", "5.00", timestamp);
-        inOrder.verify(graphite).flush();
+        inOrder.verify(graphite).sendData("prefix.meter.count", "1", timestamp);
+        inOrder.verify(graphite).sendData("prefix.meter.m1_rate", "2.00", timestamp);
+        inOrder.verify(graphite).sendData("prefix.meter.m5_rate", "3.00", timestamp);
+        inOrder.verify(graphite).sendData("prefix.meter.m15_rate", "4.00", timestamp);
+        inOrder.verify(graphite).sendData("prefix.meter.mean_rate", "5.00", timestamp);
+        inOrder.verify(graphite).flushData();
 
         verifyNoMoreInteractions(graphite);
     }
@@ -277,7 +278,7 @@ public class GraphiteReporterTest {
         when(timer.getSnapshot()).thenReturn(snapshot);
 
         reporter.report(this.<Gauge>map(),
-                        this.<Counter>map(),
+                        this.<CounterMetric>map(),
                         this.<Histogram>map(),
                         this.<Meter>map(),
                         map("timer", timer));
@@ -285,22 +286,22 @@ public class GraphiteReporterTest {
         final InOrder inOrder = inOrder(graphite);
         inOrder.verify(graphite).isConnected();
         inOrder.verify(graphite).connect();
-        inOrder.verify(graphite).send("prefix.timer.max", "100.00", timestamp);
-        inOrder.verify(graphite).send("prefix.timer.mean", "200.00", timestamp);
-        inOrder.verify(graphite).send("prefix.timer.min", "300.00", timestamp);
-        inOrder.verify(graphite).send("prefix.timer.stddev", "400.00", timestamp);
-        inOrder.verify(graphite).send("prefix.timer.p50", "500.00", timestamp);
-        inOrder.verify(graphite).send("prefix.timer.p75", "600.00", timestamp);
-        inOrder.verify(graphite).send("prefix.timer.p95", "700.00", timestamp);
-        inOrder.verify(graphite).send("prefix.timer.p98", "800.00", timestamp);
-        inOrder.verify(graphite).send("prefix.timer.p99", "900.00", timestamp);
-        inOrder.verify(graphite).send("prefix.timer.p999", "1000.00", timestamp);
-        inOrder.verify(graphite).send("prefix.timer.count", "1", timestamp);
-        inOrder.verify(graphite).send("prefix.timer.m1_rate", "3.00", timestamp);
-        inOrder.verify(graphite).send("prefix.timer.m5_rate", "4.00", timestamp);
-        inOrder.verify(graphite).send("prefix.timer.m15_rate", "5.00", timestamp);
-        inOrder.verify(graphite).send("prefix.timer.mean_rate", "2.00", timestamp);
-        inOrder.verify(graphite).flush();
+        inOrder.verify(graphite).sendData("prefix.timer.max", "100.00", timestamp);
+        inOrder.verify(graphite).sendData("prefix.timer.mean", "200.00", timestamp);
+        inOrder.verify(graphite).sendData("prefix.timer.min", "300.00", timestamp);
+        inOrder.verify(graphite).sendData("prefix.timer.stddev", "400.00", timestamp);
+        inOrder.verify(graphite).sendData("prefix.timer.p50", "500.00", timestamp);
+        inOrder.verify(graphite).sendData("prefix.timer.p75", "600.00", timestamp);
+        inOrder.verify(graphite).sendData("prefix.timer.p95", "700.00", timestamp);
+        inOrder.verify(graphite).sendData("prefix.timer.p98", "800.00", timestamp);
+        inOrder.verify(graphite).sendData("prefix.timer.p99", "900.00", timestamp);
+        inOrder.verify(graphite).sendData("prefix.timer.p999", "1000.00", timestamp);
+        inOrder.verify(graphite).sendData("prefix.timer.count", "1", timestamp);
+        inOrder.verify(graphite).sendData("prefix.timer.m1_rate", "3.00", timestamp);
+        inOrder.verify(graphite).sendData("prefix.timer.m5_rate", "4.00", timestamp);
+        inOrder.verify(graphite).sendData("prefix.timer.m15_rate", "5.00", timestamp);
+        inOrder.verify(graphite).sendData("prefix.timer.mean_rate", "2.00", timestamp);
+        inOrder.verify(graphite).flushData();
 
         verifyNoMoreInteractions(graphite);
     }
@@ -309,7 +310,7 @@ public class GraphiteReporterTest {
     public void closesConnectionIfGraphiteIsUnavailable() throws Exception {
         doThrow(new UnknownHostException("UNKNOWN-HOST")).when(graphite).connect();
         reporter.report(map("gauge", gauge(1)),
-            this.<Counter>map(),
+            this.<CounterMetric>map(),
             this.<Histogram>map(),
             this.<Meter>map(),
             this.<Timer>map());
@@ -328,7 +329,7 @@ public class GraphiteReporterTest {
         when(gauge.getValue()).thenThrow(new RuntimeException("kaboom"));
 
         reporter.report(map("gauge", gauge),
-                        this.<Counter>map(),
+                        this.<CounterMetric>map(),
                         this.<Histogram>map(),
                         this.<Meter>map(),
                         this.<Timer>map());

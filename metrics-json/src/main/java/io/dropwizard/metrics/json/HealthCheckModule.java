@@ -8,7 +8,7 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.module.SimpleSerializers;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 
-import io.dropwizard.metrics.health.HealthCheck;
+import io.dropwizard.metrics.health.jvm.HealthCheck;
 
 import java.io.IOException;
 import java.util.Arrays;

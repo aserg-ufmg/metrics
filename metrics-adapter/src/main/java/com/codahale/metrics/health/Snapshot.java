@@ -1,4 +1,4 @@
-package com.codahale.metrics;
+package com.codahale.metrics.health;
 
 import java.io.OutputStream;
 

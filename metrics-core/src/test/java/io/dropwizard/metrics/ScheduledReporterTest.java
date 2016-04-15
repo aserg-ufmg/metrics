@@ -4,7 +4,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import io.dropwizard.metrics.Counter;
+import io.dropwizard.metrics.CounterMetric;
 import io.dropwizard.metrics.Gauge;
 import io.dropwizard.metrics.Histogram;
 import io.dropwizard.metrics.Meter;
@@ -22,7 +22,7 @@ import static org.mockito.Mockito.*;
 
 public class ScheduledReporterTest {
     private final Gauge gauge = mock(Gauge.class);
-    private final Counter counter = mock(Counter.class);
+    private final CounterMetric counter = mock(CounterMetric.class);
     private final Histogram histogram = mock(Histogram.class);
     private final Meter meter = mock(Meter.class);
     private final Timer timer = mock(Timer.class);
@@ -36,7 +36,7 @@ public class ScheduledReporterTest {
                                   TimeUnit.MILLISECONDS) {
                 @Override
                 public void report(SortedMap<MetricName, Gauge> gauges,
-                                   SortedMap<MetricName, Counter> counters,
+                                   SortedMap<MetricName, CounterMetric> counters,
                                    SortedMap<MetricName, Histogram> histograms,
                                    SortedMap<MetricName, Meter> meters,
                                    SortedMap<MetricName, Timer> timers) {
@@ -44,6 +44,9 @@ public class ScheduledReporterTest {
                 }
             }
     );
+	//private final String durationUnit;
+	//protected final double rateFactor;
+	//protected final double durationFactor;
 
     @Before
     public void setUp() throws Exception {
@@ -78,4 +81,16 @@ public class ScheduledReporterTest {
         map.put(MetricName.build(name), value);
         return map;
     }
+/*
+	protected double convertRate(double rate) {
+	    return rate * rateFactor;
+	}
+
+	protected double convertDuration(double duration) {
+	    return duration * durationFactor;
+	}
+
+	protected String getDurationUnit() {
+	    return durationUnit;
+	}*/
 }

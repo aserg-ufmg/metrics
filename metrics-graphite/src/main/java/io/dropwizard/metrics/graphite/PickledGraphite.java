@@ -208,7 +208,7 @@ public class PickledGraphite implements GraphiteSender {
      *             if there was an error sending the metric
      */
     @Override
-    public void send(String name, String value, long timestamp) throws IOException {
+    public void sendData(String name, String value, long timestamp) throws IOException {
         metrics.add(new MetricTuple(sanitize(name), timestamp, sanitize(value)));
 
         if (metrics.size() >= batchSize) {
@@ -217,7 +217,7 @@ public class PickledGraphite implements GraphiteSender {
     }
 
     @Override
-    public void flush() throws IOException {
+    public void flushData() throws IOException {
         writeMetrics();
         if (writer != null) {
             writer.flush();
@@ -227,7 +227,7 @@ public class PickledGraphite implements GraphiteSender {
     @Override
     public void close() throws IOException {
         try {
-            flush();
+            flushData();
             if (writer != null) {
                 writer.close();
             }
@@ -304,7 +304,19 @@ public class PickledGraphite implements GraphiteSender {
         pickled.append(MARK);
         pickled.append(LIST);
 
-        for (MetricTuple tuple : metrics) {
+        populateWithTupleValues(metrics, pickled);
+
+        // every pickle ends with STOP
+        pickled.append(STOP);
+
+        pickled.flush();
+
+        return out.toByteArray();
+    }
+
+	private void populateWithTupleValues(List<MetricTuple> metrics,
+			Writer pickled) throws IOException {
+		for (MetricTuple tuple : metrics) {
             // start the outer tuple
             pickled.append(MARK);
 
@@ -338,14 +350,7 @@ public class PickledGraphite implements GraphiteSender {
 
             pickled.append(APPEND);
         }
-
-        // every pickle ends with STOP
-        pickled.append(STOP);
-
-        pickled.flush();
-
-        return out.toByteArray();
-    }
+	}
 
     static class MetricTuple {
         String name;

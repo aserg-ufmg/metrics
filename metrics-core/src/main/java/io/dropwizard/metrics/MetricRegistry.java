@@ -1,6 +1,6 @@
 package io.dropwizard.metrics;
 
-import io.dropwizard.metrics.Counter;
+import io.dropwizard.metrics.CounterMetric;
 import io.dropwizard.metrics.ExponentiallyDecayingReservoir;
 import io.dropwizard.metrics.Gauge;
 import io.dropwizard.metrics.Histogram;
@@ -125,18 +125,18 @@ public class MetricRegistry implements MetricSet {
     /**
      * @see #counter(MetricName)
      */
-    public Counter counter(String name) {
+    public CounterMetric counter(String name) {
         return counter(MetricName.build(name));
     }
 
     /**
-     * Return the {@link Counter} registered under this name; or create and register
-     * a new {@link Counter} if none is registered.
+     * Return the {@link CounterMetric} registered under this name; or create and register
+     * a new {@link CounterMetric} if none is registered.
      *
      * @param name the name of the metric
-     * @return a new or pre-existing {@link Counter}
+     * @return a new or pre-existing {@link CounterMetric}
      */
-    public Counter counter(MetricName name) {
+    public CounterMetric counter(MetricName name) {
         return getOrAdd(name, MetricBuilder.COUNTERS);
     }
 
@@ -280,7 +280,7 @@ public class MetricRegistry implements MetricSet {
      *
      * @return all the counters in the registry
      */
-    public SortedMap<MetricName, Counter> getCounters() {
+    public SortedMap<MetricName, CounterMetric> getCounters() {
         return getCounters(MetricFilter.ALL);
     }
 
@@ -291,8 +291,8 @@ public class MetricRegistry implements MetricSet {
      * @param filter    the metric filter to match
      * @return all the counters in the registry
      */
-    public SortedMap<MetricName, Counter> getCounters(MetricFilter filter) {
-        return getMetrics(Counter.class, filter);
+    public SortedMap<MetricName, CounterMetric> getCounters(MetricFilter filter) {
+        return getMetrics(CounterMetric.class, filter);
     }
 
     /**
@@ -392,8 +392,8 @@ public class MetricRegistry implements MetricSet {
     private void notifyListenerOfAddedMetric(MetricRegistryListener listener, Metric metric, MetricName name) {
         if (metric instanceof Gauge) {
             listener.onGaugeAdded(name, (Gauge<?>) metric);
-        } else if (metric instanceof Counter) {
-            listener.onCounterAdded(name, (Counter) metric);
+        } else if (metric instanceof CounterMetric) {
+            listener.onCounterAdded(name, (CounterMetric) metric);
         } else if (metric instanceof Histogram) {
             listener.onHistogramAdded(name, (Histogram) metric);
         } else if (metric instanceof Meter) {
@@ -414,7 +414,7 @@ public class MetricRegistry implements MetricSet {
     private void notifyListenerOfRemovedMetric(MetricName name, Metric metric, MetricRegistryListener listener) {
         if (metric instanceof Gauge) {
             listener.onGaugeRemoved(name);
-        } else if (metric instanceof Counter) {
+        } else if (metric instanceof CounterMetric) {
             listener.onCounterRemoved(name);
         } else if (metric instanceof Histogram) {
             listener.onHistogramRemoved(name);
@@ -449,15 +449,15 @@ public class MetricRegistry implements MetricSet {
      * A quick and easy way of capturing the notion of default metrics.
      */
     private interface MetricBuilder<T extends Metric> {
-        MetricBuilder<Counter> COUNTERS = new MetricBuilder<Counter>() {
+        MetricBuilder<CounterMetric> COUNTERS = new MetricBuilder<CounterMetric>() {
             @Override
-            public Counter newMetric() {
-                return new Counter();
+            public CounterMetric newMetric() {
+                return new CounterMetric();
             }
 
             @Override
             public boolean isInstance(Metric metric) {
-                return Counter.class.isInstance(metric);
+                return CounterMetric.class.isInstance(metric);
             }
         };
 

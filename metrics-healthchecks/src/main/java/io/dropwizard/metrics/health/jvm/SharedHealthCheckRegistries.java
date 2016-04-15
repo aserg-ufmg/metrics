@@ -1,4 +1,6 @@
-package io.dropwizard.metrics.health;
+package io.dropwizard.metrics.health.jvm;
+
+import io.dropwizard.metrics.health.HealthCheckRegistry;
 
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -32,13 +34,17 @@ public class SharedHealthCheckRegistries {
     public static HealthCheckRegistry getOrCreate(String name) {
         final HealthCheckRegistry existing = REGISTRIES.get(name);
         if (existing == null) {
-            final HealthCheckRegistry created = new HealthCheckRegistry();
-            final HealthCheckRegistry raced = add(name, created);
-            if (raced == null) {
-                return created;
-            }
-            return raced;
+            return createRegistry(name);
         }
         return existing;
     }
+
+	private static HealthCheckRegistry createRegistry(String name) {
+		final HealthCheckRegistry created = new HealthCheckRegistry();
+		final HealthCheckRegistry raced = add(name, created);
+		if (raced == null) {
+		    return created;
+		}
+		return raced;
+	}
 }

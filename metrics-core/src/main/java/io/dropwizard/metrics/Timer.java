@@ -42,7 +42,7 @@ public class Timer implements Metered, Sampling {
         }
     }
 
-    private final Meter meter;
+    final Meter meter;
     private final Histogram histogram;
     private final Clock clock;
 
@@ -82,7 +82,7 @@ public class Timer implements Metered, Sampling {
      * @param unit     the scale unit of {@code duration}
      */
     public void update(long duration, TimeUnit unit) {
-        update(unit.toNanos(duration));
+        histogram.update(this, unit.toNanos(duration));
     }
 
     /**
@@ -99,7 +99,7 @@ public class Timer implements Metered, Sampling {
         try {
             return event.call();
         } finally {
-            update(clock.getTick() - startTime);
+            histogram.update(this, clock.getTick() - startTime);
         }
     }
 
@@ -114,7 +114,7 @@ public class Timer implements Metered, Sampling {
         try {
             event.run();
         } finally {
-            update(this.clock.getTick() - startTime);
+            histogram.update(this, this.clock.getTick() - startTime);
         }
     }
 
@@ -156,12 +156,5 @@ public class Timer implements Metered, Sampling {
     @Override
     public Snapshot getSnapshot() {
         return histogram.getSnapshot();
-    }
-
-    private void update(long duration) {
-        if (duration >= 0) {
-            histogram.update(duration);
-            meter.mark();
-        }
     }
 }

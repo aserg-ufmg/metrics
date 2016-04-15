@@ -130,7 +130,7 @@ public class Graphite implements GraphiteSender {
     }
 
     @Override
-    public void send(String name, String value, long timestamp) throws IOException {
+    public void sendData(String name, String value, long timestamp) throws IOException {
         try {
             writer.write(sanitize(name));
             writer.write(' ');
@@ -151,7 +151,7 @@ public class Graphite implements GraphiteSender {
     }
 
     @Override
-    public void flush() throws IOException {
+    public void flushData() throws IOException {
         if (writer != null) {
             writer.flush();
         }

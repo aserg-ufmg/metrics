@@ -4,12 +4,12 @@ import org.junit.Before;
 import org.junit.Test;
 
 import io.dropwizard.metrics.jvm.GarbageCollectorMetricSet;
-
 import io.dropwizard.metrics.Gauge;
 import io.dropwizard.metrics.MetricName;
 
 import java.lang.management.GarbageCollectorMXBean;
 import java.util.Arrays;
+import java.util.regex.Pattern;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -18,6 +18,7 @@ import static org.mockito.Mockito.when;
 public class GarbageCollectorMetricSetTest {
     private final GarbageCollectorMXBean gc = mock(GarbageCollectorMXBean.class);
     private final GarbageCollectorMetricSet metrics = new GarbageCollectorMetricSet(Arrays.asList(gc));
+	public static final Pattern WHITESPACE = Pattern.compile("[\\s]+");
 
     private static final MetricName PS_OLDGEN_TIME = MetricName.build("PS-OldGen.time");
     private static final MetricName PS_OLDGEN_COUNT = MetricName.build("PS-OldGen.count");

@@ -17,6 +17,7 @@ import static org.mockito.Mockito.when;
 public class ThreadDeadlockDetectorTest {
     private final ThreadMXBean threads = mock(ThreadMXBean.class);
     private final ThreadDeadlockDetector detector = new ThreadDeadlockDetector(threads);
+	public static final int MAX_STACK_TRACE_DEPTH = 100;
 
     @Test
     public void returnsAnEmptySetIfNoThreadsAreDeadlocked() throws Exception {

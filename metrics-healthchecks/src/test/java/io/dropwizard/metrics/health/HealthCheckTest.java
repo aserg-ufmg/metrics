@@ -2,8 +2,7 @@ package io.dropwizard.metrics.health;
 
 import org.junit.Test;
 
-import io.dropwizard.metrics.health.HealthCheck;
-
+import io.dropwizard.metrics.health.jvm.HealthCheck;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -18,7 +17,7 @@ public class HealthCheckTest {
 
         @Override
         protected Result check() throws Exception {
-            return underlying.execute();
+            return underlying.executeCheck();
         }
     }
 
@@ -115,9 +114,9 @@ public class HealthCheckTest {
     @Test
     public void returnsResultsWhenExecuted() throws Exception {
         final HealthCheck.Result result = mock(HealthCheck.Result.class);
-        when(underlying.execute()).thenReturn(result);
+        when(underlying.executeCheck()).thenReturn(result);
 
-        assertThat(healthCheck.execute())
+        assertThat(healthCheck.executeCheck())
                 .isEqualTo(result);
     }
 
@@ -126,9 +125,9 @@ public class HealthCheckTest {
         final RuntimeException e = mock(RuntimeException.class);
         when(e.getMessage()).thenReturn("oh noes");
 
-        when(underlying.execute()).thenThrow(e);
+        when(underlying.executeCheck()).thenThrow(e);
 
-        assertThat(healthCheck.execute())
+        assertThat(healthCheck.executeCheck())
                 .isEqualTo(HealthCheck.Result.unhealthy(e));
     }
 }

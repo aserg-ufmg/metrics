@@ -31,11 +31,7 @@ public class InstrumentedTimingCollector implements TimingCollector {
 
     @Override
     public void collect(long elapsedTime, StatementContext ctx) {
-        final Timer timer = getTimer(ctx);
+        final Timer timer = registry.timer(statementNameStrategy.getStatementName(ctx));
         timer.update(elapsedTime, TimeUnit.NANOSECONDS);
-    }
-
-    private Timer getTimer(StatementContext ctx) {
-        return registry.timer(statementNameStrategy.getStatementName(ctx));
     }
 }

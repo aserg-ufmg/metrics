@@ -12,7 +12,7 @@ import io.dropwizard.metrics.Timer;
 
 import java.io.IOException;
 
-public class InstrumentedHttpRequestExecutor extends HttpRequestExecutor {
+public class InstrumentedHttpRequestExecutor extends HttpRequestExecutor implements HttpExecutor {
     private final MetricRegistry registry;
     private final HttpClientMetricNameStrategy metricNameStrategy;
     private final String name;
@@ -38,7 +38,10 @@ public class InstrumentedHttpRequestExecutor extends HttpRequestExecutor {
         this.metricNameStrategy = metricNameStrategy;
     }
 
-    @Override
+    /* (non-Javadoc)
+	 * @see io.dropwizard.metrics.httpclient.HttpExecutor#execute(org.apache.http.HttpRequest, org.apache.http.HttpClientConnection, org.apache.http.protocol.HttpContext)
+	 */
+	@Override
     public HttpResponse execute(HttpRequest request, HttpClientConnection conn, HttpContext context) throws HttpException, IOException {
         final Timer.Context timerContext = timer(request).time();
         try {

@@ -5,7 +5,7 @@ import static io.dropwizard.metrics.MetricRegistry.name;
 import org.junit.Before;
 import org.junit.Test;
 
-import io.dropwizard.metrics.Counter;
+import io.dropwizard.metrics.CounterMetric;
 import io.dropwizard.metrics.Gauge;
 import io.dropwizard.metrics.Histogram;
 import io.dropwizard.metrics.Meter;
@@ -37,7 +37,7 @@ public class MetricRegistryTest {
     private final MetricRegistry registry = new MetricRegistry();
     @SuppressWarnings("unchecked")
     private final Gauge<String> gauge = mock(Gauge.class);
-    private final Counter counter = mock(Counter.class);
+    private final CounterMetric counter = mock(CounterMetric.class);
     private final Histogram histogram = mock(Histogram.class);
     private final Meter meter = mock(Meter.class);
     private final Timer timer = mock(Timer.class);
@@ -75,8 +75,8 @@ public class MetricRegistryTest {
 
     @Test
     public void accessingACounterRegistersAndReusesTheCounter() throws Exception {
-        final Counter counter1 = registry.counter(THING);
-        final Counter counter2 = registry.counter(THING);
+        final CounterMetric counter1 = registry.counter(THING);
+        final CounterMetric counter2 = registry.counter(THING);
 
         assertThat(counter1)
                 .isSameAs(counter2);

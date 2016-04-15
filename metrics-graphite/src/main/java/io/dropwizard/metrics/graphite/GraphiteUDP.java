@@ -71,7 +71,7 @@ public class GraphiteUDP implements GraphiteSender {
     }
 
     @Override
-    public void send(String name, String value, long timestamp) throws IOException {
+    public void sendData(String name, String value, long timestamp) throws IOException {
         // Underlying socket can be closed by ICMP
         if (!isConnected()) {
             connect();
@@ -101,7 +101,7 @@ public class GraphiteUDP implements GraphiteSender {
     }
 
     @Override
-    public void flush() throws IOException {
+    public void flushData() throws IOException {
     	  // Nothing to do
     }
 

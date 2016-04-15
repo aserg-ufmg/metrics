@@ -9,7 +9,7 @@ import org.eclipse.jetty.server.HttpChannelState;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.HandlerWrapper;
 
-import io.dropwizard.metrics.Counter;
+import io.dropwizard.metrics.CounterMetric;
 import io.dropwizard.metrics.Meter;
 import io.dropwizard.metrics.MetricName;
 import io.dropwizard.metrics.MetricRegistry;
@@ -42,13 +42,13 @@ public class InstrumentedHandler extends HandlerWrapper {
     private Timer dispatches;
 
     // the number of active requests
-    private Counter activeRequests;
+    private CounterMetric activeRequests;
 
     // the number of active dispatches
-    private Counter activeDispatches;
+    private CounterMetric activeDispatches;
 
     // the number of requests currently suspended.
-    private Counter activeSuspended;
+    private CounterMetric activeSuspended;
 
     // the number of requests that have been asynchronously dispatched
     private Meter asyncDispatches;
@@ -295,9 +295,13 @@ public class InstrumentedHandler extends HandlerWrapper {
         if (responseStatus >= 1 && responseStatus <= 5) {
             responses[responseStatus - 1].mark();
         }
-        activeRequests.dec();
+        updateRequest(request, start);
+    }
+
+	private void updateRequest(HttpServletRequest request, long start) {
+		activeRequests.dec();
         final long elapsedTime = System.currentTimeMillis() - start;
         requests.update(elapsedTime, TimeUnit.MILLISECONDS);
         requestTimer(request.getMethod()).update(elapsedTime, TimeUnit.MILLISECONDS);
-    }
+	}
 }

@@ -18,7 +18,7 @@ public class InstrumentedExecutorService implements ExecutorService {
 
     private final ExecutorService delegate;
     private final Meter submitted;
-    private final Counter running;
+    private final CounterMetric running;
     private final Meter completed;
     private final Timer duration;
     private final Meter rejected;

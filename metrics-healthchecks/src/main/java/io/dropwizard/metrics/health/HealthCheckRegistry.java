@@ -1,9 +1,11 @@
 package io.dropwizard.metrics.health;
 
-import static io.dropwizard.metrics.health.HealthCheck.Result;
+import static io.dropwizard.metrics.health.jvm.HealthCheck.Result;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import io.dropwizard.metrics.health.jvm.HealthCheck;
 
 import java.util.*;
 import java.util.concurrent.*;
@@ -63,7 +65,7 @@ public class HealthCheckRegistry {
         if (healthCheck == null) {
             throw new NoSuchElementException("No health check named " + name + " exists");
         }
-        return healthCheck.execute();
+        return healthCheck.executeCheck();
     }
 
     /**
@@ -74,7 +76,7 @@ public class HealthCheckRegistry {
     public SortedMap<String, HealthCheck.Result> runHealthChecks() {
         final SortedMap<String, HealthCheck.Result> results = new TreeMap<String, HealthCheck.Result>();
         for (Map.Entry<String, HealthCheck> entry : healthChecks.entrySet()) {
-            final Result result = entry.getValue().execute();
+            final Result result = entry.getValue().executeCheck();
             results.put(entry.getKey(), result);
         }
         return Collections.unmodifiableSortedMap(results);
@@ -91,7 +93,7 @@ public class HealthCheckRegistry {
             futures.put(entry.getKey(), executor.submit(new Callable<Result>() {
                 @Override
                 public Result call() throws Exception {
-                    return entry.getValue().execute();
+                    return entry.getValue().executeCheck();
                 }
             }));
         }

@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
  * The abstract base class for all scheduled reporters (i.e., reporters which process a registry's
  * metrics periodically).
  *
- * @see ConsoleReporter
+ * @see ConsolePrinter
  * @see CsvReporter
  * @see Slf4jReporter
  */
@@ -55,9 +55,6 @@ public abstract class ScheduledReporter implements Closeable, Reporter {
     private final MetricRegistry registry;
     private final ScheduledExecutorService executor;
     private final MetricFilter filter;
-    private final double durationFactor;
-    private final String durationUnit;
-    private final double rateFactor;
     private final String rateUnit;
 
     /**
@@ -95,10 +92,10 @@ public abstract class ScheduledReporter implements Closeable, Reporter {
         this.registry = registry;
         this.filter = filter;
         this.executor = executor;
-        this.rateFactor = rateUnit.toSeconds(1);
-        this.rateUnit = calculateRateUnit(rateUnit);
-        this.durationFactor = 1.0 / durationUnit.toNanos(1);
-        this.durationUnit = durationUnit.toString().toLowerCase(Locale.US);
+		final String s = rateUnit.toString().toLowerCase(Locale.US);
+        this.rateUnit = s.substring(0, s.length() - 1);
+        
+        
     }
 
     /**
@@ -175,7 +172,7 @@ public abstract class ScheduledReporter implements Closeable, Reporter {
      * @param timers     all of the timers in the registry
      */
     public abstract void report(SortedMap<MetricName, Gauge> gauges,
-                                SortedMap<MetricName, Counter> counters,
+                                SortedMap<MetricName, CounterMetric> counters,
                                 SortedMap<MetricName, Histogram> histograms,
                                 SortedMap<MetricName, Meter> meters,
                                 SortedMap<MetricName, Timer> timers);
@@ -184,20 +181,13 @@ public abstract class ScheduledReporter implements Closeable, Reporter {
         return rateUnit;
     }
 
-    protected String getDurationUnit() {
-        return durationUnit;
-    }
+    protected String format(long n) {
+	    return Long.toString(n);
+	}
 
-    protected double convertDuration(double duration) {
-        return duration * durationFactor;
-    }
-
-    protected double convertRate(double rate) {
-        return rate * rateFactor;
-    }
-
-    private String calculateRateUnit(TimeUnit unit) {
-        final String s = unit.toString().toLowerCase(Locale.US);
-        return s.substring(0, s.length() - 1);
-    }
+	protected String format(double v) {
+	    // the Carbon plaintext format is pretty underspecified, but it seems like it just wants
+	    // US-formatted digits
+	    return String.format(Locale.US, "%2.2f", v);
+	}
 }

@@ -9,13 +9,10 @@ import java.util.Arrays;
 import java.util.List;
 
 public abstract class DelegatingStatementNameStrategy implements StatementNameStrategy {
-    private final List<StatementNameStrategy> strategies = new ArrayList<StatementNameStrategy>();
+    public final List<StatementNameStrategy> strategies = new ArrayList<StatementNameStrategy>();
 
     protected DelegatingStatementNameStrategy(StatementNameStrategy... strategies) {
-        registerStrategies(strategies);
-    }
-
-    protected void registerStrategies(StatementNameStrategy... strategies) {
+        //registerStrategies(strategies);
         this.strategies.addAll(Arrays.asList(strategies));
     }
 

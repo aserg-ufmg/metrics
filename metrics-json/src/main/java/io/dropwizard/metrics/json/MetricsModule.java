@@ -8,7 +8,7 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.module.SimpleSerializers;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 
-import io.dropwizard.metrics.Counter;
+import io.dropwizard.metrics.CounterMetric;
 import io.dropwizard.metrics.Gauge;
 import io.dropwizard.metrics.Histogram;
 import io.dropwizard.metrics.Meter;
@@ -47,14 +47,14 @@ public class MetricsModule extends Module {
         }
     }
 
-    private static class CounterSerializer extends StdSerializer<Counter> {
+    private static class CounterSerializer extends StdSerializer<CounterMetric> {
         private static final long serialVersionUID = 7526471295622776148L;
         private CounterSerializer() {
-            super(Counter.class);
+            super(CounterMetric.class);
         }
 
         @Override
-        public void serialize(Counter counter,
+        public void serialize(CounterMetric counter,
                               JsonGenerator json,
                               SerializerProvider provider) throws IOException {
             json.writeStartObject();

@@ -295,4 +295,8 @@ public class MetricName implements Comparable<MetricName> {
         set.addAll(right.keySet());
         return set;
     }
+
+	String prefix(Slf4jReporter slf4jReporter, String... components) {
+	    return MetricName.join(MetricName.join(slf4jReporter.prefix, this), MetricName.build(components)).getKey();
+	}
 }

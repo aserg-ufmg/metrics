@@ -7,6 +7,7 @@ import org.skife.jdbi.v2.StatementContext;
 import io.dropwizard.metrics.MetricName;
 
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -86,4 +87,8 @@ public final class ShortNameStrategy extends DelegatingStatementNameStrategy {
             return null;
         }
     }
+
+	protected void registerStrategies(StatementNameStrategy... strategies) {
+	    this.strategies.addAll(Arrays.asList(strategies));
+	}
 }

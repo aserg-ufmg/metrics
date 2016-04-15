@@ -4,9 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 
 import io.dropwizard.metrics.json.HealthCheckModule;
-
-import io.dropwizard.metrics.health.HealthCheck;
 import io.dropwizard.metrics.health.HealthCheckRegistry;
+import io.dropwizard.metrics.health.jvm.HealthCheck;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServlet;

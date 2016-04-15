@@ -3,7 +3,7 @@ package io.dropwizard.metrics;
 import org.junit.After;
 import org.junit.Test;
 
-import io.dropwizard.metrics.Counter;
+import io.dropwizard.metrics.CounterMetric;
 import io.dropwizard.metrics.Histogram;
 import io.dropwizard.metrics.InstrumentedScheduledExecutorService;
 import io.dropwizard.metrics.Meter;
@@ -21,13 +21,13 @@ public class InstrumentedScheduledExecutorServiceTest {
 
     final Meter submitted = registry.meter("xs.submitted");
 
-    final Counter running = registry.counter("xs.running");
+    final CounterMetric running = registry.counter("xs.running");
     final Meter completed = registry.meter("xs.completed");
     final Timer duration = registry.timer("xs.duration");
 
     final Meter scheduledOnce = registry.meter("xs.scheduled.once");
     final Meter scheduledRepetitively = registry.meter("xs.scheduled.repetitively");
-    final Counter scheduledOverrun = registry.counter("xs.scheduled.overrun");
+    final CounterMetric scheduledOverrun = registry.counter("xs.scheduled.overrun");
     final Histogram percentOfPeriod = registry.histogram("xs.scheduled.percent-of-period");
 
     @Test

@@ -4,6 +4,8 @@ import java.io.Closeable;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
+import com.codahale.metrics.health.Snapshot;
+
 import io.dropwizard.metrics.Metered;
 import io.dropwizard.metrics.Sampling;
 

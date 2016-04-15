@@ -10,6 +10,7 @@ import java.lang.management.LockInfo;
 import java.lang.management.MonitorInfo;
 import java.lang.management.ThreadInfo;
 import java.lang.management.ThreadMXBean;
+import java.nio.charset.Charset;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -22,6 +23,7 @@ public class ThreadDumpTest {
     private final ThreadDump threadDump = new ThreadDump(threadMXBean);
 
     private final ThreadInfo runnable = mock(ThreadInfo.class);
+	public static final Charset UTF_8 = Charset.forName("UTF-8");
 
     @Before
     public void setUp() throws Exception {

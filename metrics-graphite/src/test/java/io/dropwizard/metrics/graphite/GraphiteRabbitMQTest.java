@@ -60,7 +60,7 @@ public class GraphiteRabbitMQTest
         graphite.connect();
 
         try {
-            graphite.send("name", "value", 0);
+            graphite.sendData("name", "value", 0);
             failBecauseExceptionWasNotThrown(IOException.class);
         } catch (IOException e) {
             assertThat(graphite.getFailures()).isEqualTo(1);
@@ -89,7 +89,7 @@ public class GraphiteRabbitMQTest
     @Test
     public void shouldSendMetricsToGraphiteServer() throws Exception {
         graphite.connect();
-        graphite.send("name", "value", 100);
+        graphite.sendData("name", "value", 100);
 
         String expectedMessage = "name value 100\n";
 
@@ -101,7 +101,7 @@ public class GraphiteRabbitMQTest
     @Test
     public void shouldSanitizeAndSendMetricsToGraphiteServer() throws Exception {
         graphite.connect();
-        graphite.send("name to sanitize", "value to sanitize", 100);
+        graphite.sendData("name to sanitize", "value to sanitize", 100);
 
         String expectedMessage = "name-to-sanitize value-to-sanitize 100\n";
 

@@ -4,8 +4,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import io.dropwizard.metrics.Clock;
-import io.dropwizard.metrics.ConsoleReporter;
-import io.dropwizard.metrics.Counter;
+import io.dropwizard.metrics.ConsolePrinter;
+import io.dropwizard.metrics.CounterMetric;
 import io.dropwizard.metrics.Gauge;
 import io.dropwizard.metrics.Histogram;
 import io.dropwizard.metrics.Meter;
@@ -33,7 +33,7 @@ public class ConsoleReporterTest {
     private final Clock clock = mock(Clock.class);
     private final ByteArrayOutputStream bytes = new ByteArrayOutputStream();
     private final PrintStream output = new PrintStream(bytes);
-    private final ConsoleReporter reporter = ConsoleReporter.forRegistry(registry)
+    private final ConsolePrinter reporter = ConsolePrinter.forRegistry(registry)
                                                             .outputTo(output)
                                                             .formattedFor(Locale.US)
                                                             .withClock(clock)
@@ -54,7 +54,7 @@ public class ConsoleReporterTest {
         when(gauge.getValue()).thenReturn(1);
 
         reporter.report(map("gauge", gauge),
-                        this.<Counter>map(),
+                        this.<CounterMetric>map(),
                         this.<Histogram>map(),
                         this.<Meter>map(),
                         this.<Timer>map());
@@ -73,7 +73,7 @@ public class ConsoleReporterTest {
 
     @Test
     public void reportsCounterValues() throws Exception {
-        final Counter counter = mock(Counter.class);
+        final CounterMetric counter = mock(CounterMetric.class);
         when(counter.getCount()).thenReturn(100L);
 
         reporter.report(this.<Gauge>map(),
@@ -114,7 +114,7 @@ public class ConsoleReporterTest {
         when(histogram.getSnapshot()).thenReturn(snapshot);
 
         reporter.report(this.<Gauge>map(),
-                        this.<Counter>map(),
+                        this.<CounterMetric>map(),
                         map("test.histogram", histogram),
                         this.<Meter>map(),
                         this.<Timer>map());
@@ -151,7 +151,7 @@ public class ConsoleReporterTest {
         when(meter.getFifteenMinuteRate()).thenReturn(5.0);
 
         reporter.report(this.<Gauge>map(),
-                        this.<Counter>map(),
+                        this.<CounterMetric>map(),
                         this.<Histogram>map(),
                         map("test.meter", meter),
                         this.<Timer>map());
@@ -197,7 +197,7 @@ public class ConsoleReporterTest {
         when(timer.getSnapshot()).thenReturn(snapshot);
 
         reporter.report(this.<Gauge>map(),
-                        this.<Counter>map(),
+                        this.<CounterMetric>map(),
                         this.<Histogram>map(),
                         this.<Meter>map(),
                         map("test.another.timer", timer));

@@ -10,14 +10,14 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 public class SlidingTimeWindowReservoir implements Reservoir {
     // allow for this many duplicate ticks before overwriting measurements
-    private static final int COLLISION_BUFFER = 256;
+    static final int COLLISION_BUFFER = 256;
     // only trim on updating once every N
     private static final int TRIM_THRESHOLD = 256;
 
     private final Clock clock;
     private final ConcurrentSkipListMap<Long, Long> measurements;
     private final long window;
-    private final AtomicLong lastTick;
+    final AtomicLong lastTick;
     private final AtomicLong count;
 
     /**
@@ -47,37 +47,21 @@ public class SlidingTimeWindowReservoir implements Reservoir {
 
     @Override
     public int size() {
-        trim();
+        measurements.headMap(clock.getTick(this) - window).clear();
         return measurements.size();
     }
 
     @Override
     public void update(long value) {
         if (count.incrementAndGet() % TRIM_THRESHOLD == 0) {
-            trim();
+            measurements.headMap(clock.getTick(this) - window).clear();
         }
-        measurements.put(getTick(), value);
+        measurements.put(clock.getTick(this), value);
     }
 
     @Override
     public Snapshot getSnapshot() {
-        trim();
+        measurements.headMap(clock.getTick(this) - window).clear();
         return new UniformSnapshot(measurements.values());
-    }
-
-    private long getTick() {
-        for (; ; ) {
-            final long oldTick = lastTick.get();
-            final long tick = clock.getTick() * COLLISION_BUFFER;
-            // ensure the tick is strictly incrementing even if there are duplicate ticks
-            final long newTick = tick - oldTick > 0 ? tick : oldTick + 1;
-            if (lastTick.compareAndSet(oldTick, newTick)) {
-                return newTick;
-            }
-        }
-    }
-
-    private void trim() {
-        measurements.headMap(getTick() - window).clear();
     }
 }

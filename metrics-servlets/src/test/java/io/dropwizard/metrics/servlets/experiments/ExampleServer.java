@@ -10,7 +10,7 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.thread.ThreadPool;
 
-import io.dropwizard.metrics.Counter;
+import io.dropwizard.metrics.CounterMetric;
 import io.dropwizard.metrics.Gauge;
 import io.dropwizard.metrics.MetricRegistry;
 import io.dropwizard.metrics.health.HealthCheckRegistry;
@@ -23,10 +23,10 @@ import io.dropwizard.metrics.servlets.MetricsServlet;
 
 public class ExampleServer {
     private static final MetricRegistry REGISTRY = new MetricRegistry();
-    private static final Counter COUNTER_1 = REGISTRY.counter(name(ExampleServer.class,
+    private static final CounterMetric COUNTER_1 = REGISTRY.counter(name(ExampleServer.class,
                                                                    "wah",
                                                                    "doody"));
-    private static final Counter COUNTER_2 = REGISTRY.counter(name(ExampleServer.class, "woo"));
+    private static final CounterMetric COUNTER_2 = REGISTRY.counter(name(ExampleServer.class, "woo"));
     static {
         REGISTRY.register(name(ExampleServer.class, "boo"), new Gauge<Integer>() {
             @Override

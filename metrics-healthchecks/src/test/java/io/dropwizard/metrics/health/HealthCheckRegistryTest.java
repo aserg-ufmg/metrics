@@ -3,8 +3,8 @@ package io.dropwizard.metrics.health;
 import org.junit.Before;
 import org.junit.Test;
 
-import io.dropwizard.metrics.health.HealthCheck;
 import io.dropwizard.metrics.health.HealthCheckRegistry;
+import io.dropwizard.metrics.health.jvm.HealthCheck;
 
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -27,9 +27,9 @@ public class HealthCheckRegistryTest {
 
     @Before
     public void setUp() throws Exception {
-        when(hc1.execute()).thenReturn(r1);
+        when(hc1.executeCheck()).thenReturn(r1);
 
-        when(hc2.execute()).thenReturn(r2);
+        when(hc2.executeCheck()).thenReturn(r2);
 
         registry.register("hc1", hc1);
         registry.register("hc2", hc2);

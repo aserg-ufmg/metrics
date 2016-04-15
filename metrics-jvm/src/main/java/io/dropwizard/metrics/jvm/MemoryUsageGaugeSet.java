@@ -1,7 +1,6 @@
 package io.dropwizard.metrics.jvm;
 
 import static io.dropwizard.metrics.MetricRegistry.name;
-
 import io.dropwizard.metrics.Gauge;
 import io.dropwizard.metrics.Metric;
 import io.dropwizard.metrics.MetricName;
@@ -18,15 +17,12 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 /**
  * A set of gauges for JVM memory usage, including stats on heap vs. non-heap memory, plus
  * GC-specific memory pools.
  */
 public class MemoryUsageGaugeSet implements MetricSet {
-    private static final Pattern WHITESPACE = Pattern.compile("[\\s]+");
-
     private final MemoryMXBean mxBean;
     private final List<MemoryPoolMXBean> memoryPools;
 
@@ -151,7 +147,7 @@ public class MemoryUsageGaugeSet implements MetricSet {
         });
 
         for (final MemoryPoolMXBean pool : memoryPools) {
-            final MetricName poolName = name("pools", WHITESPACE.matcher(pool.getName()).replaceAll("-"));
+            final MetricName poolName = name("pools", MemoryUsageGaugeSetTest.WHITESPACE.matcher(pool.getName()).replaceAll("-"));
 
             gauges.put(poolName.resolve("usage"),
                     new RatioGauge() {

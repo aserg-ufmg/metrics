@@ -2,7 +2,6 @@ package io.dropwizard.metrics;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicLongArray;
 
@@ -12,9 +11,8 @@ import java.util.concurrent.atomic.AtomicLongArray;
  *
  * @see <a href="http://www.cs.umd.edu/~samir/498/vitter.pdf">Random Sampling with a Reservoir</a>
  */
-public class UniformReservoir implements Reservoir {
-    private static final int DEFAULT_SIZE = 1028;
-    private static final int BITS_PER_LONG = 63;
+public class UniformReservoir extends ReservoirNextLong implements Reservoir {
+    private static final int DEFAULT_SIZE = 1028;    
     private final AtomicLong count = new AtomicLong();
     private final AtomicLongArray values;
 
@@ -59,22 +57,6 @@ public class UniformReservoir implements Reservoir {
                 values.set((int) r, value);
             }
         }
-    }
-
-    /**
-     * Get a pseudo-random long uniformly between 0 and n-1. Stolen from
-     * {@link java.util.Random#nextInt()}.
-     *
-     * @param n the bound
-     * @return a value select randomly from the range {@code [0..n)}.
-     */
-    private static long nextLong(long n) {
-        long bits, val;
-        do {
-            bits = ThreadLocalRandom.current().nextLong() & (~(1L << BITS_PER_LONG));
-            val = bits % n;
-        } while (bits - val + (n - 1) < 0L);
-        return val;
     }
 
     @Override

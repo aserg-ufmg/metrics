@@ -4,7 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
-import java.nio.charset.Charset;
 import java.util.Locale;
 import java.util.Map;
 import java.util.SortedMap;
@@ -127,12 +126,13 @@ public class CsvReporter extends ScheduledReporter {
     }
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CsvReporter.class);
-    private static final Charset UTF_8 = Charset.forName("UTF-8");
-
     private final File directory;
     private final Locale locale;
     private final Clock clock;
     private final CsvFileProvider csvFileProvider;
+	private final String durationUnit;
+	protected final double rateFactor;
+	protected final double durationFactor;
 
     private CsvReporter(MetricRegistry registry,
                         File directory,
@@ -147,11 +147,14 @@ public class CsvReporter extends ScheduledReporter {
         this.locale = locale;
         this.clock = clock;
         this.csvFileProvider = csvFileProvider;
+        this.durationUnit = durationUnit.toString().toLowerCase(Locale.US);
+        this.rateFactor = rateUnit.toSeconds(1);
+        this.durationFactor = 1.0 / durationUnit.toNanos(1);
     }
 
     @Override
     public void report(SortedMap<MetricName, Gauge> gauges,
-                       SortedMap<MetricName, Counter> counters,
+                       SortedMap<MetricName, CounterMetric> counters,
                        SortedMap<MetricName, Histogram> histograms,
                        SortedMap<MetricName, Meter> meters,
                        SortedMap<MetricName, Timer> timers) {
@@ -161,12 +164,29 @@ public class CsvReporter extends ScheduledReporter {
             reportGauge(timestamp, entry.getKey(), entry.getValue());
         }
 
-        for (Map.Entry<MetricName, Counter> entry : counters.entrySet()) {
+        for (Map.Entry<MetricName, CounterMetric> entry : counters.entrySet()) {
             reportCounter(timestamp, entry.getKey(), entry.getValue());
         }
 
         for (Map.Entry<MetricName, Histogram> entry : histograms.entrySet()) {
-            reportHistogram(timestamp, entry.getKey(), entry.getValue());
+            Histogram histogram = entry.getValue();
+			final Snapshot snapshot = histogram.getSnapshot();
+			
+			report(timestamp,
+			       entry.getKey(),
+			       "count,max,mean,min,stddev,p50,p75,p95,p98,p99,p999",
+			       "%d,%d,%f,%d,%f,%f,%f,%f,%f,%f,%f",
+			       histogram.getCount(),
+			       snapshot.getMax(),
+			       snapshot.getMean(),
+			       snapshot.getMin(),
+			       snapshot.getStdDev(),
+			       snapshot.getMedian(),
+			       snapshot.get75thPercentile(),
+			       snapshot.get95thPercentile(),
+			       snapshot.get98thPercentile(),
+			       snapshot.get99thPercentile(),
+			       snapshot.get999thPercentile());
         }
 
         for (Map.Entry<MetricName, Meter> entry : meters.entrySet()) {
@@ -217,27 +237,7 @@ public class CsvReporter extends ScheduledReporter {
                getRateUnit());
     }
 
-    private void reportHistogram(long timestamp, MetricName name, Histogram histogram) {
-        final Snapshot snapshot = histogram.getSnapshot();
-
-        report(timestamp,
-               name,
-               "count,max,mean,min,stddev,p50,p75,p95,p98,p99,p999",
-               "%d,%d,%f,%d,%f,%f,%f,%f,%f,%f,%f",
-               histogram.getCount(),
-               snapshot.getMax(),
-               snapshot.getMean(),
-               snapshot.getMin(),
-               snapshot.getStdDev(),
-               snapshot.getMedian(),
-               snapshot.get75thPercentile(),
-               snapshot.get95thPercentile(),
-               snapshot.get98thPercentile(),
-               snapshot.get99thPercentile(),
-               snapshot.get999thPercentile());
-    }
-
-    private void reportCounter(long timestamp, MetricName name, Counter counter) {
+    private void reportCounter(long timestamp, MetricName name, CounterMetric counter) {
         report(timestamp, name, "count", "%d", counter.getCount());
     }
 
@@ -250,7 +250,7 @@ public class CsvReporter extends ScheduledReporter {
             final File file = csvFileProvider.getFile(directory, name);
             final boolean fileAlreadyExists = file.exists();
             if (fileAlreadyExists || file.createNewFile()) {
-                final PrintWriter out = new PrintWriter(new OutputStreamWriter(new FileOutputStream(file,true), UTF_8));
+                final PrintWriter out = new PrintWriter(new OutputStreamWriter(new FileOutputStream(file,true), CsvReporterTest.UTF_8));
                 try {
                     if (!fileAlreadyExists) {
                         out.println("t," + header);
@@ -264,4 +264,16 @@ public class CsvReporter extends ScheduledReporter {
             LOGGER.warn("Error writing to {}", name, e);
         }
     }
+
+	protected double convertRate(double rate) {
+	    return rate * rateFactor;
+	}
+
+	protected double convertDuration(double duration) {
+	    return duration * durationFactor;
+	}
+
+	protected String getDurationUnit() {
+	    return durationUnit;
+	}
 }

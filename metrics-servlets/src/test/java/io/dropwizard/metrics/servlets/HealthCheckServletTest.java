@@ -14,8 +14,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import io.dropwizard.metrics.health.HealthCheck;
 import io.dropwizard.metrics.health.HealthCheckRegistry;
+import io.dropwizard.metrics.health.jvm.HealthCheck;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;

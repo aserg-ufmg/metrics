@@ -289,7 +289,7 @@ abstract class UnsafeStriped64 extends Number {
     /**
      * Sets base and all cells to the given value.
      */
-    final void internalReset(long initialValue) {
+    final void internalResetData(long initialValue) {
         Cell[] as = cells;
         base = initialValue;
         if (as != null) {

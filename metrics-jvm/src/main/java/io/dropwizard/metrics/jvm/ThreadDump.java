@@ -7,14 +7,11 @@ import java.lang.management.LockInfo;
 import java.lang.management.MonitorInfo;
 import java.lang.management.ThreadInfo;
 import java.lang.management.ThreadMXBean;
-import java.nio.charset.Charset;
 
 /**
  * A convenience class for getting a thread dump.
  */
 public class ThreadDump {
-    private static final Charset UTF_8 = Charset.forName("UTF-8");
-
     private final ThreadMXBean threadMXBean;
 
     public ThreadDump(ThreadMXBean threadMXBean) {
@@ -28,7 +25,7 @@ public class ThreadDump {
      */
     public void dump(OutputStream out) {
         final ThreadInfo[] threads = this.threadMXBean.dumpAllThreads(true, true);
-        final PrintWriter writer = new PrintWriter(new OutputStreamWriter(out, UTF_8));
+        final PrintWriter writer = new PrintWriter(new OutputStreamWriter(out, ThreadDumpTest.UTF_8));
 
         for (int ti = threads.length - 1; ti >= 0; ti--) {
             final ThreadInfo t = threads[ti];

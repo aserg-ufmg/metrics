@@ -9,10 +9,6 @@ import java.io.File;
 public class FixedNameCsvFileProvider implements CsvFileProvider {
     @Override
     public File getFile(File directory, MetricName metricName) {
-        return new File(directory, sanitize(metricName) + ".csv");
-    }
-
-    private String sanitize(MetricName metricName) {
-        return metricName.getKey();
+        return new File(directory, metricName.getKey() + ".csv");
     }
 }

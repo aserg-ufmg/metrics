@@ -14,7 +14,7 @@ public class InstrumentedThreadFactory implements ThreadFactory {
 
     private final ThreadFactory delegate;
     private final Meter created;
-    private final Counter running;
+    private final CounterMetric running;
     private final Meter terminated;
 
     /**

@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import io.dropwizard.metrics.ConsoleReporter;
+import io.dropwizard.metrics.ConsolePrinter;
 import io.dropwizard.metrics.Meter;
 import io.dropwizard.metrics.MetricFilter;
 import io.dropwizard.metrics.MetricName;
@@ -72,8 +72,8 @@ public final class SendToLocalInfluxDB {
         return reporter;
     }
 
-    private static ConsoleReporter startConsoleReporter(MetricRegistry registry) throws Exception {
-        final ConsoleReporter reporter = ConsoleReporter
+    private static ConsolePrinter startConsoleReporter(MetricRegistry registry) throws Exception {
+        final ConsolePrinter reporter = ConsolePrinter
                 .forRegistry(registry)
                 .convertRatesTo(TimeUnit.SECONDS)
                 .convertDurationsTo(TimeUnit.MILLISECONDS)

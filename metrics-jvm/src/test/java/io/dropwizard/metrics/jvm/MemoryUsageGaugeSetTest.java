@@ -4,7 +4,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import io.dropwizard.metrics.jvm.MemoryUsageGaugeSet;
-
 import io.dropwizard.metrics.Gauge;
 import io.dropwizard.metrics.MetricName;
 
@@ -12,6 +11,7 @@ import java.lang.management.MemoryMXBean;
 import java.lang.management.MemoryPoolMXBean;
 import java.lang.management.MemoryUsage;
 import java.util.Arrays;
+import java.util.regex.Pattern;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -30,6 +30,7 @@ public class MemoryUsageGaugeSetTest {
     private final MemoryUsageGaugeSet gauges = new MemoryUsageGaugeSet(mxBean,
                                                                        Arrays.asList(memoryPool,
                                                                                      weirdMemoryPool));
+	public static final Pattern WHITESPACE = Pattern.compile("[\\s]+");
 
     private static final MetricName TOTAL = MetricName.build("total");
     private static final MetricName HEAP = MetricName.build("heap");

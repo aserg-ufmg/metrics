@@ -10,7 +10,7 @@ import org.junit.Test;
 
 import io.dropwizard.metrics.json.MetricsModule;
 
-import io.dropwizard.metrics.Counter;
+import io.dropwizard.metrics.CounterMetric;
 import io.dropwizard.metrics.Gauge;
 import io.dropwizard.metrics.Histogram;
 import io.dropwizard.metrics.Meter;
@@ -53,7 +53,7 @@ public class MetricsModuleTest {
 
     @Test
     public void serializesCounters() throws Exception {
-        final Counter counter = mock(Counter.class);
+        final CounterMetric counter = mock(CounterMetric.class);
         when(counter.getCount()).thenReturn(100L);
 
         assertThat(mapper.writeValueAsString(counter))

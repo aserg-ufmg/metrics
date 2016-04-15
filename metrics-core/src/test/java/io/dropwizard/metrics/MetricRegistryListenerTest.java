@@ -2,7 +2,7 @@ package io.dropwizard.metrics;
 
 import org.junit.Test;
 
-import io.dropwizard.metrics.Counter;
+import io.dropwizard.metrics.CounterMetric;
 import io.dropwizard.metrics.Gauge;
 import io.dropwizard.metrics.Histogram;
 import io.dropwizard.metrics.Meter;
@@ -17,7 +17,7 @@ public class MetricRegistryListenerTest {
     private static final MetricName BLAH = MetricName.build("blah");
     
     private final Gauge gauge = mock(Gauge.class);
-    private final Counter counter = mock(Counter.class);
+    private final CounterMetric counter = mock(CounterMetric.class);
     private final Histogram histogram = mock(Histogram.class);
     private final Meter meter = mock(Meter.class);
     private final Timer timer = mock(Timer.class);

@@ -2,8 +2,6 @@ package io.dropwizard.metrics.health.jvm;
 
 import io.dropwizard.metrics.jvm.ThreadDeadlockDetector;
 
-import io.dropwizard.metrics.health.HealthCheck;
-
 import java.util.Set;
 
 /**
